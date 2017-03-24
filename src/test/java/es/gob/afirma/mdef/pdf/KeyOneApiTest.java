@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration({"classpath*:aplicationContext-mdef-api.xml"})
 public class KeyOneApiTest {
 
-    private static final String PDF_FILE = "\\Agenda Codemotion 2016.pdf";
+    private static final String PDF_FILE = "\\pdf-test.pdf";
 	
     @Autowired
      private KeyOneApi keyOneApi;
@@ -30,9 +30,9 @@ public class KeyOneApiTest {
         System.out.println("numero de hojas"+numPage);
     }    
    
-    //@Test
+    @Test
     public void TestAddBlankPage() throws Exception {
-        keyOneApi.addBlankPage(PDF_FILE);
+        keyOneApi.addBlankPage("C:\\temp\\pdf-test.pdf");
         int numPage =keyOneApi.getPdfPageNumber(PDF_FILE);
         System.out.println("numero de hojas tras añadirle una en blanco"+numPage);
     }    

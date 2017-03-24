@@ -67,8 +67,7 @@ public interface KeyOneApi {
 	 * @throws Exception
 	 *             Error en la firma por lotes
 	 */
-	public String doBatchSign(final String xmlPath, String alias, String password);// throws
-																					// Exception;
+	public String doBatchSign(final String xmlPath, String alias, String password) throws Exception;
 
 	/**
 	 * Firma del fichero pdf.
@@ -167,4 +166,18 @@ public interface KeyOneApi {
 	public void addSignField(final String filePath, final int page, final int leftX, final int leftY, final int rightX,
 			final int rightY) throws DocumentException, IOException;// ,
 																	// PdfException;
+	
+	
+	/**
+	 * obtener el CN del certificado cargado de una tarjeta (almacén de certificados).
+	 * 
+	 * @param filePath
+	 *            Ruta del fichero firmado.
+	 * @return CN del certificado.
+	 * @throws PdfException
+	 *             Error en la apertura o en el acceso al fichero.
+	 */
+	public String getCNCert(final String filePath);// throws
+															// PdfException;
+	
 }

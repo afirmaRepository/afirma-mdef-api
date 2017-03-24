@@ -12,9 +12,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.swing.JOptionPane;
 
 import org.springframework.stereotype.Service;
 
@@ -29,10 +32,15 @@ import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.AOSignerFactory;
+import es.gob.afirma.core.ui.AOUIFactory;
 import es.gob.afirma.keystores.AOCertificatesNotFoundException;
+import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreDialog;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerException;
+import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
+import es.gob.afirma.keystores.AOKeystoreAlternativeException;
+import es.gob.afirma.keystores.AggregatedKeyStoreManager;
 import es.gob.afirma.keystores.filters.CertificateFilter;
 import es.gob.afirma.keystores.filters.PolicyIdFilter;
 import es.gob.afirma.signers.pades.BadPdfPasswordException;
@@ -40,6 +48,7 @@ import es.gob.afirma.signers.pades.PdfHasUnregisteredSignaturesException;
 import es.gob.afirma.signers.pades.PdfIsCertifiedException;
 import es.gob.afirma.signers.pades.PdfUtil;
 import es.gob.afirma.signers.pades.PdfUtil.SignatureField;
+import es.gob.afirma.standalone.SimpleAfirmaMessages;
 import es.gob.afirma.standalone.SimpleKeyStoreManager;
 import es.gob.afirma.standalone.ui.preferences.PreferencesManager;
 import nu.xom.XMLException;
@@ -85,13 +94,13 @@ public class KeyOneApiImpl implements KeyOneApi {
 	@Override
 	public void addBlankPage(String filePath) {
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				final FileOutputStream os = new FileOutputStream(new File(filePath))) {
+			final FileOutputStream os = new FileOutputStream(new File(filePath))) {
 			final PdfReader pdfReader = new PdfReader(filePath);
 			final Calendar cal = Calendar.getInstance();
 			final PdfStamper stp = new PdfStamper(pdfReader, baos, cal);
-/*			stp.insertPage(pdfReader.getNumberOfPages() + 1,
-			pdfReader.getPageSizeWithRotation(1));
-*/			stp.close(cal);
+//			stp.insertPage(pdfReader.getNumberOfPages() + 1,
+//			pdfReader.getPageSizeWithRotation(1));
+			stp.close(cal);
 			pdfReader.close();
 			os.write(baos.toByteArray());
 			os.close();
@@ -104,9 +113,9 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public String doBatchSign(String xmlPath, String alias, String password) {
+	public String doBatchSign(String xmlPath, String alias, String password) throws Exception{
 		// Conversion del fichero XML a bytes
-		/*		byte [] xmlBytes = null;
+		byte [] xmlBytes = null;
 		File f = new File(xmlPath);
 		xmlBytes = new byte[(int)f.length()]; 
 		try (
@@ -142,16 +151,16 @@ public class KeyOneApiImpl implements KeyOneApi {
 				 PrivateKeyEntry pke = aksm.getKeyEntry(alias);
 			 
 				 //Se firma con la clave privada
-				 return BatchSigner.sign(
-						Base64.encode(xmlBytes), 
-						pke.getCertificateChain(), 
-						pke.getPrivateKey()
-					);
+//				 return BatchSigner.sign(
+//						Base64.encode(xmlBytes), 
+//						pke.getCertificateChain(), 
+//						pke.getPrivateKey()
+//					);
 			 }
-		} catch (CertificateEncodingException | AOException e) {
+/*		} catch (CertificateEncodingException | AOException e) {
 			LOGGER.severe("Error durante la firma por lotes: " + e); //$NON-NLS-1$
 			throw e;
-		}
+*/		}
 		catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
 			LOGGER.severe("No se ha encontrado el alias en el almacen: " + e); //$NON-NLS-1$
 			throw e;
@@ -160,8 +169,8 @@ public class KeyOneApiImpl implements KeyOneApi {
 			LOGGER.severe("No de ha podido inicializar el almacen de windows: " + e); //$NON-NLS-1$
 			throw e;
 		}
-		throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); //$NON-NLS-1$
-*/	
+		//throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); //$NON-NLS-1$
+	
 		return null;	
 	}
 
@@ -309,7 +318,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	@Override
 	public void addSignField(String filePath, int page, int leftX, int leftY, int rightX, int rightY)
 			throws DocumentException, IOException {
-/*		int pageNbr = getPdfPageNumber(filePath);
+		int pageNbr = getPdfPageNumber(filePath);
 		if(page > pageNbr || page < pageNbr*-1) {
 			throw new IllegalArgumentException("El numero de pagina no puede ser superior al numero total"); //$NON-NLS-1$
 		}
@@ -318,11 +327,11 @@ public class KeyOneApiImpl implements KeyOneApi {
 				FileOutputStream fos = new FileOutputStream(filePath)
 				) {
 			PdfStamper stamper = new PdfStamper(reader, fos, new GregorianCalendar());
-			PdfFormField sig = PdfFormField.createSignature(stamper.getWriter()); 
-			sig.setWidget(new Rectangle(leftX, leftY, rightX, rightY), null); 
-			sig.setFlags(PdfAnnotation.FLAGS_PRINT); 
-			sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));  //$NON-NLS-1$
-			sig.setFieldName("SIGNATURE");  //$NON-NLS-1$
+//			PdfFormField sig = PdfFormField.createSignature(stamper.getWriter()); 
+//			sig.setWidget(new Rectangle(leftX, leftY, rightX, rightY), null); 
+//			sig.setFlags(PdfAnnotation.FLAGS_PRINT); 
+//			sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));  //$NON-NLS-1$
+//			sig.setFieldName("SIGNATURE");  //$NON-NLS-1$
 			int finalPage;
 			if(page > 0) {
 				finalPage = page;
@@ -333,13 +342,19 @@ public class KeyOneApiImpl implements KeyOneApi {
 			else {
 				finalPage = 1;
 			}
-			sig.setPage(finalPage); 
-			stamper.addAnnotation(sig, finalPage); 
+//			sig.setPage(finalPage); 
+//			stamper.addAnnotation(sig, finalPage); 
 			stamper.close(new GregorianCalendar()); 
 		}
 		catch (IOException e) {
 			throw new IOException("El fichero " + filePath + " no existe: " + e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-*/	}
+	}
+
+	@Override
+	public String getCNCert(String filePath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

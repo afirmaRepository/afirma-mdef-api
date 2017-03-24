@@ -21,44 +21,21 @@
 
 		<dependency>
 			<groupId>es.gob.afirma</groupId>
-			<artifactId>afirma-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.afirma</groupId>
 			<artifactId>afirma-ui-simpleafirma</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>es.gob.afirma</groupId>
-			<artifactId>afirma-crypto-pdf</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>es.gob.afirma</groupId>
-			<artifactId>afirma-lib-itext</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>1.8.10</version>
-		</dependency>
+		</dependency>		
 
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${springframework.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -69,15 +46,22 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${springframework.version}</version>
-		</dependency> 
-	
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
-	<scm>
+<!-- 	<scm>
 		<connection>scm:svn:http://svn-ctt.administracionelectronica.gob.es/svn/clienteafirma/project/afirma-desktop/afirma-simple/trunk</connection>
 		<url>http://svn-ctt.administracionelectronica.gob.es/svn/clienteafirma/project/afirma-desktop/afirma-simple/trunk</url>
 	</scm>
-
+ -->
 	<build>
 		<plugins>
 			<plugin>
