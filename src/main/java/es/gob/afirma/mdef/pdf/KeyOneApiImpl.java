@@ -353,7 +353,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 
 	@Override
 	public String getCNCert(String filePath) {
-		// TODO Auto-generated method stub
+		// TODO metodo a implementar
 		return null;
 	}
 

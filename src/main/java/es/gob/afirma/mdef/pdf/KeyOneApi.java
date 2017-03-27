@@ -169,7 +169,7 @@ public interface KeyOneApi {
 	
 	
 	/**
-	 * obtener el CN del certificado cargado de una tarjeta (almacén de certificados).
+	 * obtener el CN del certificado cargado de una tarjeta (almac&eacute;n de certificados).
 	 * 
 	 * @param filePath
 	 *            Ruta del fichero firmado.
