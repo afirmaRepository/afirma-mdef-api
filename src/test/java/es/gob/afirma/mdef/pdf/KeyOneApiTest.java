@@ -33,6 +33,7 @@ public class KeyOneApiTest {
     @Test
     public void TestAddBlankPage() throws Exception {
         keyOneApi.addBlankPage("C:\\temp\\pdf-test.pdf");
+        
         int numPage =keyOneApi.getPdfPageNumber(PDF_FILE);
         System.out.println("numero de hojas tras añadirle una en blanco"+numPage);
     }    
