@@ -60,7 +60,7 @@ public class KeyOneApiTest {
         assertNotNull(keyOneApi);
     }    
     
-    @Test
+    //@Test
     //OK
     /*
      i.	Añadir página: Incorporación de una página en blanco al final de un documento PDF.
@@ -74,7 +74,7 @@ public class KeyOneApiTest {
         assertEquals(numPageBefore+1,numPageAfter);
     }    
 
-    @Test   
+    //@Test   
     //OK
     /*
     ii.	Contar campos de firma: Obtención del número de campos de firma (vacíos o no) de un documento PDF. 
@@ -82,10 +82,10 @@ public class KeyOneApiTest {
 		(y adicionalmente los campos de firma en blanco) existentes en el documento. 
     */
 	public void TestEnumSignatureFieldNames() throws Exception{
-    	assertEquals("Signature1",keyOneApi.enumSignatureFieldNames(SING_PDF_FILE));
+    	assertEquals("Signature1"	,keyOneApi.enumSignatureFieldNames(SING_PDF_FILE));
 	}
     
-    @Test
+    //@Test
 	//OK
 	/*
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
@@ -96,7 +96,7 @@ public class KeyOneApiTest {
     }    
    
     
-    @Test
+    //@Test
     //OK
 	/*
 	 * iv.	Añadir campo de firma: Añadir un campo de firma vacío en cualquier página de un documento PDF, 
@@ -107,7 +107,7 @@ public class KeyOneApiTest {
     	assertEquals("SIGNATURE",keyOneApi.enumSignatureFieldNames(PDF_FILE_TEST));
     }   																	// PdfException;
     
-    //@Test
+    @Test
     //funciona
     /*
      * v.	El interfaz de programación permitirá seleccionar el certificado de firma por su identificador
@@ -117,7 +117,7 @@ public class KeyOneApiTest {
 		keyOneApi.getPrivateKeyEntry(getCertFilters());
     }
 
-    @Test
+    //@Test
     //OK (se selecciona para la prueba la tarjeta PKI10)
     /*
      * vi.	Deberá proporcionar la funcionalidad para obtener el CN del certificado cargado 
@@ -165,7 +165,7 @@ public class KeyOneApiTest {
     	
     }
 
-    @Test
+    //@Test
     //OK
     /*
      * d.	De deben poder verificar documentos PDF: Verifica las firmas de un documento PDF, informando sobre el número de firmas y un resultado de la verificación para cada una de ellas.
