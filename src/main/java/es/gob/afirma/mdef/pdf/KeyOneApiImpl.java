@@ -10,20 +10,33 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
+import org.spongycastle.asn1.x500.RDN;
+import org.spongycastle.asn1.x500.style.BCStyle;
+import org.spongycastle.asn1.x500.style.IETFUtils;
+import org.spongycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.springframework.stereotype.Service;
 
 import com.aowagie.text.DocumentException;
+import com.aowagie.text.Rectangle;
+import com.aowagie.text.pdf.AcroFields;
+import com.aowagie.text.pdf.PdfAnnotation;
+import com.aowagie.text.pdf.PdfFormField;
+import com.aowagie.text.pdf.PdfName;
 import com.aowagie.text.pdf.PdfReader;
 import com.aowagie.text.pdf.PdfStamper;
+import com.aowagie.text.pdf.PdfString;
 
 import es.gob.afirma.cert.signvalidation.SignValiderFactory;
 import es.gob.afirma.cert.signvalidation.SignValidity.SIGN_DETAIL_TYPE;
@@ -59,15 +72,18 @@ public class KeyOneApiImpl implements KeyOneApi {
 	private static final String SEPARATOR = ","; //$NON-NLS-1$
 	private static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); //$NON-NLS-1$
 
-	@Override
-	public String enumSignatureFieldNames(String filePath) {
+	//@Override
+	public String enumSignatureFieldNamesOld(String filePath) {
 		final StringBuilder sb = new StringBuilder();
 		try (final InputStream fis = new FileInputStream(new File(filePath))) {
 			final byte[] data = AOUtil.getDataFromInputStream(fis);
 			final List<SignatureField> fields = PdfUtil.getPdfEmptySignatureFields(data);
+			int cont =1;
 			for (final SignatureField field : fields) {
 				sb.append(field.getName());
-				sb.append(SEPARATOR);
+				if(fields.size()>cont){
+					sb.append(SEPARATOR);
+				}				
 			}
 			return sb.toString();
 		} catch (final Exception e) {
@@ -78,6 +94,37 @@ public class KeyOneApiImpl implements KeyOneApi {
 		return null;
 	}
 
+	@Override
+	public String enumSignatureFieldNames(String filePath) {
+		final StringBuilder sb = new StringBuilder();
+		try (final InputStream fis = new FileInputStream(new File(filePath))) {
+			final byte[] data = AOUtil.getDataFromInputStream(fis);
+			final List<SignatureField> fields = PdfUtil.getPdfEmptySignatureFields(data);
+			PdfReader localPdfReader = new PdfReader(data);
+			AcroFields localAcroFields = localPdfReader.getAcroFields();			
+			List<String> localList = localAcroFields.getSignatureNames();
+			
+			List<String> listNamesEmpty = fields.stream().map(u -> u.getName()).collect(Collectors.toList());
+			if(localList.size()>0){
+				listNamesEmpty.addAll(localList);
+			}
+			int cont =1;
+			for (String nameSignature : listNamesEmpty){
+				sb.append(nameSignature);
+				if(fields.size()>cont){
+					sb.append(SEPARATOR);
+				}								
+			}
+			
+			return sb.toString();
+		} catch (final Exception e) {
+			LOGGER.severe("Error recuperando los nombres de campos de firma del PDF: " + e); //$NON-NLS-1$
+			// throw new PdfException("Error recuperando los nombres de campos
+			// de firma del pdf: " + e, e); //$NON-NLS-1$
+		}
+		return null;
+	}
+	
 	@Override
 	public int getPdfPageNumber(String filePath) {
 		PdfReader pdfReader = null;
@@ -91,17 +138,18 @@ public class KeyOneApiImpl implements KeyOneApi {
 		return pdfReader.getNumberOfPages();
 	}
 
+	
 	@Override
 	public void addBlankPage(String filePath) {
-		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			final FileOutputStream os = new FileOutputStream(new File(filePath))) {
+		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			final PdfReader pdfReader = new PdfReader(filePath);
 			final Calendar cal = Calendar.getInstance();
 			final PdfStamper stp = new PdfStamper(pdfReader, baos, cal);
-//			stp.insertPage(pdfReader.getNumberOfPages() + 1,
-//			pdfReader.getPageSizeWithRotation(1));
+			stp.insertPage(pdfReader.getNumberOfPages() + 1,
+			pdfReader.getPageSizeWithRotation(1));
 			stp.close(cal);
 			pdfReader.close();
+			final FileOutputStream os = new FileOutputStream(new File(filePath));
 			os.write(baos.toByteArray());
 			os.close();
 		} catch (final Exception e) {
@@ -285,6 +333,12 @@ public class KeyOneApiImpl implements KeyOneApi {
 		byte[] sign = null;
 		try ( final FileInputStream fis = new FileInputStream(new File(filePath)) ) {
 			sign = AOUtil.getDataFromInputStream(fis);
+			PdfReader localPdfReader = new PdfReader(sign);
+			AcroFields localAcroFields = localPdfReader.getAcroFields();			
+			List localList = localAcroFields.getSignatureNames();
+			if(!(localList.size()>0)){
+				return false;
+			}
 			return SignValiderFactory.getSignValider(sign).validate(sign).getValidity().equals(SIGN_DETAIL_TYPE.OK);
 		}
 		catch(final Exception e) {
@@ -324,14 +378,15 @@ public class KeyOneApiImpl implements KeyOneApi {
 		}
 		final PdfReader reader = new PdfReader(filePath);
 		try (
-				FileOutputStream fos = new FileOutputStream(filePath)
+				//FileOutputStream fos = new FileOutputStream(filePath)
+				FileOutputStream fos = new FileOutputStream(createNameNewFile(filePath, "New"))
 				) {
 			PdfStamper stamper = new PdfStamper(reader, fos, new GregorianCalendar());
-//			PdfFormField sig = PdfFormField.createSignature(stamper.getWriter()); 
-//			sig.setWidget(new Rectangle(leftX, leftY, rightX, rightY), null); 
-//			sig.setFlags(PdfAnnotation.FLAGS_PRINT); 
-//			sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));  //$NON-NLS-1$
-//			sig.setFieldName("SIGNATURE");  //$NON-NLS-1$
+			PdfFormField sig = PdfFormField.createSignature(stamper.getWriter()); 
+			sig.setWidget(new Rectangle(leftX, leftY, rightX, rightY), null); 
+			sig.setFlags(PdfAnnotation.FLAGS_PRINT); 
+			sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));  //$NON-NLS-1$
+			sig.setFieldName("SIGNATURE");  //$NON-NLS-1$
 			int finalPage;
 			if(page > 0) {
 				finalPage = page;
@@ -342,19 +397,69 @@ public class KeyOneApiImpl implements KeyOneApi {
 			else {
 				finalPage = 1;
 			}
-//			sig.setPage(finalPage); 
-//			stamper.addAnnotation(sig, finalPage); 
-			stamper.close(new GregorianCalendar()); 
+			sig.setPage(finalPage); 
+			stamper.addAnnotation(sig, finalPage); 
+			stamper.close(new GregorianCalendar());
+			final File oldPdf = new File(filePath);
+			final File newPdf  = new File(createNameNewFile(filePath, "New"));
+            oldPdf.delete(); 
+            newPdf.renameTo(new File(filePath));			
 		}
 		catch (IOException e) {
+			e.printStackTrace();
 			throw new IOException("El fichero " + filePath + " no existe: " + e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
-
+	
 	@Override
-	public String getCNCert(String filePath) {
-		// TODO metodo a implementar
-		return null;
+	public String getCNCert(List<? extends CertificateFilter> filters) 
+			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
+			KeyStoreException, NoSuchAlgorithmException{
+		String cnTarjeta = null;
+		final AOKeyStoreManager ksm = SimpleKeyStoreManager.getKeyStore(false, null);
+		final AOKeyStoreDialog dialog = new AOKeyStoreDialog(
+				ksm,
+				null,
+				false,             // Comprobar claves privadas
+				false,            // Mostrar certificados caducados
+				true,             // Comprobar validez temporal del certificado
+				null, 				// Filtros
+				false             // mandatoryCertificate
+			);
+		dialog.show();
+		X509Certificate dest = null;
+		ksm.setParentComponent(null);
+		for (final String alias : ksm.getAliases()) {
+			if (alias.equals(dialog.getSelectedAlias())) {
+				dest = ksm.getCertificate(alias);
+				break;
+			}
+		}
+		
+		if(null!= dest){
+			org.spongycastle.asn1.x500.X500Name x500name;
+			try {
+				x500name = new JcaX509CertificateHolder(dest).getSubject();
+			RDN cn2 = x500name.getRDNs(BCStyle.CN)[0];
+			cnTarjeta = IETFUtils.valueToString(cn2.getFirst().getValue());
+			AOUIFactory.showMessageDialog(
+					null,
+					cnTarjeta, //$NON-NLS-1$
+					"CN de la tarjeta seleccionada", //$NON-NLS-1$
+					AOUIFactory.INFORMATION_MESSAGE
+				);
+			} catch (CertificateEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return cnTarjeta;
 	}
+	
 
+	private String createNameNewFile(String filePath, String modif){
+		return filePath.substring(0 ,  filePath.indexOf("."))+modif+filePath.substring(filePath.indexOf("."),filePath.length());
+	}
+	
 }

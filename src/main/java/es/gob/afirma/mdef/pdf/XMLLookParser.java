@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -71,6 +72,14 @@ public final class XMLLookParser {
 		this.cer = (X509Certificate) pke.getCertificate();
 	}
 
+	public XMLLookParser(final String xml, final Properties p) {
+		this.xml = xml;
+		this.image = null;
+		this.prop = p;
+		this.field = null;
+		this.cer =null;
+	}
+	
 	/** Parsa el documento XML recibido.
 	 * @return Propiedades del documento.
 	 * @throws XMLException Error en la lectura del fichero XML.
@@ -83,8 +92,11 @@ public final class XMLLookParser {
 		try(final InputStream in = new ByteArrayInputStream(this.xml.getBytes(StandardCharsets.UTF_8))) {
 			final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			final Document doc = docBuilder.parse(in);
-
+			//final Document doc = docBuilder.parse(in);
+			 // create a new document from input stream
+			final FileInputStream fis = new FileInputStream(this.xml);
+			final Document doc = docBuilder.parse(fis);
+			
 			if (this.field == null) {
 				final Node page = doc.getElementsByTagName("signaturePosition").item(0); //$NON-NLS-1$
 				if (page != null) {

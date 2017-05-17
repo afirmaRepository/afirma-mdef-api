@@ -171,13 +171,23 @@ public interface KeyOneApi {
 	/**
 	 * obtener el CN del certificado cargado de una tarjeta (almac&eacute;n de certificados).
 	 * 
-	 * @param filePath
-	 *            Ruta del fichero firmado.
-	 * @return CN del certificado.
-	 * @throws PdfException
-	 *             Error en la apertura o en el acceso al fichero.
+	 * @param filters
+	 *            Filtros para la obtenci&oacute;n de la clave.
+	 * @return Cn de la tarjeta.
+	 * @throws UnrecoverableEntryException
+	 *             Error en la inicializaci&oacute;n del almac&eacute;n.
+	 * @throws AOCertificatesNotFoundException
+	 *             No se han encontrados certificados.
+	 * @throws AOKeyStoreManagerException
+	 *             Error en la inicializaci&oacute;n del almac&eacute;n.
+	 * @throws KeyStoreException
+	 *             Error en la inicializaci&oacute;n del almac&eacute;n.
+	 * @throws NoSuchAlgorithmException
+	 *             No existe el algoritmo.
 	 */
-	public String getCNCert(final String filePath);// throws
+	public String getCNCert(final List<? extends CertificateFilter> filters) 
+			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
+			KeyStoreException, NoSuchAlgorithmException;// throws
 															// PdfException;
 	
 }
