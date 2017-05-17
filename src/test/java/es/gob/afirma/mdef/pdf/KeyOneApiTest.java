@@ -125,7 +125,7 @@ public class KeyOneApiTest {
      */
 	public void TestGetCNCert() throws Exception{
 		System.out.println(keyOneApi.getCNCert(getCertFilters()));
-		assertEquals("USUARIO PRUEBA PKI10 |X00000040",keyOneApi.getCNCert(getCertFilters()));
+		assertEquals("USUARIO PRUEBA PKI10 |X00000040", keyOneApi.getCNCert(getCertFilters()));
 	}
 
     //@Test
