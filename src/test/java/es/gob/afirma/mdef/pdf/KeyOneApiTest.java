@@ -67,7 +67,7 @@ public class KeyOneApiTest {
 		1.	En la práctica, se envía a la herramienta el path y nombre de un fichero y ésta devolverá el 
 		documento PDF con una página en blanco añadida. 
      */
-    public void TestAddBlankPage() throws Exception {
+    public void testAddBlankPage() throws Exception {
         int numPageBefore = keyOneApi.getPdfPageNumber(PDF_FILE_TEST);
     	keyOneApi.addBlankPage(PDF_FILE_TEST);
         int numPageAfter = keyOneApi.getPdfPageNumber(PDF_FILE_TEST);
@@ -81,7 +81,7 @@ public class KeyOneApiTest {
 		1.	En la práctica, se envía a la herramienta el path y nombre de un fichero y ésta devolverá los campos de firma 
 		(y adicionalmente los campos de firma en blanco) existentes en el documento. 
     */
-	public void TestEnumSignatureFieldNames() throws Exception{
+	public void testEnumSignatureFieldNames() throws Exception{
     	assertEquals("Signature1"	,keyOneApi.enumSignatureFieldNames(SING_PDF_FILE));
 	}
     
@@ -90,7 +90,7 @@ public class KeyOneApiTest {
 	/*
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
 	 */
-    public void TestPdfPageNumber() throws Exception {
+    public void testPdfPageNumber() throws Exception {
         int numPage =keyOneApi.getPdfPageNumber(PDF_FILE_TEST);
         assertTrue(numPage==2);
     }    
@@ -102,7 +102,7 @@ public class KeyOneApiTest {
 	 * iv.	Añadir campo de firma: Añadir un campo de firma vacío en cualquier página de un documento PDF, 
 	 * especificando posición y tamaño del mismo.
 	 */
-    public void TestAddSignField() throws Exception {
+    public void testAddSignField() throws Exception {
     	keyOneApi.addSignField(PDF_FILE_TEST, 2, 24, 13, 60, 27);
     	assertEquals("SIGNATURE",keyOneApi.enumSignatureFieldNames(PDF_FILE_TEST));
     }   																	// PdfException;
@@ -113,7 +113,7 @@ public class KeyOneApiTest {
      * v.	El interfaz de programación permitirá seleccionar el certificado de firma por su identificador
      *  de política de certificación (extensión CertificatePolicies).
      */
-	public void TestGetPrivateKeyEntry() throws Exception{
+	public void testGetPrivateKeyEntry() throws Exception{
 		keyOneApi.getPrivateKeyEntry(getCertFilters());
     }
 
@@ -123,7 +123,7 @@ public class KeyOneApiTest {
      * vi.	Deberá proporcionar la funcionalidad para obtener el CN del certificado cargado 
      * de una tarjeta (almacén de certificados).
      */
-	public void TestGetCNCert() throws Exception{
+	public void testGetCNCert() throws Exception{
 		System.out.println(keyOneApi.getCNCert(getCertFilters()));
 		assertEquals("USUARIO PRUEBA PKI10 |X00000040", keyOneApi.getCNCert(getCertFilters()));
 	}
@@ -139,7 +139,7 @@ public class KeyOneApiTest {
 		firmado, la política de certificación, el nombre del campo de firma, un booleano indicando si se requiere sello de tiempo, y un XML que 
 		define la apariencia de firma; y devolverá una codificación de resultado.
      */
-    public void TestPdfSign() throws Exception{
+    public void testPdfSign() throws Exception{
     	keyOneApi.pdfSign(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOK);
     }	
     
@@ -152,7 +152,7 @@ public class KeyOneApiTest {
 		ii.	Todas las operaciones de firma deben permitir volver a firmar un documento previamente firmado.
 		c.	De igual manera, será posible firmar varios documentos PDF exigiendo el PIN para cada uno de ellos.
      */    
-    public void TestDoBatchSign() throws Exception{
+    public void testDoBatchSign() throws Exception{
 		// Se obtiene el xml de la carpeta resources
 		URL xmlURL = this.getClass().getResource("/xml/batch-with-countersign.xml"); //$NON-NLS-1$
 
@@ -171,7 +171,7 @@ public class KeyOneApiTest {
      * d.	De deben poder verificar documentos PDF: Verifica las firmas de un documento PDF, informando sobre el número de firmas y un resultado de la verificación para cada una de ellas.
 		i.	En la práctica, se envía a la herramienta el path y nombre de un fichero y ésta devolverá el resultado de la verificación.
      */
-    public void TestVerifySignature() throws Exception{
+    public void testVerifySignature() throws Exception{
     	assertTrue(keyOneApi.verifySignature(SING_PDF_FILE));
     	assertFalse(keyOneApi.verifySignature(PDF_FILE_TEST));
     }
