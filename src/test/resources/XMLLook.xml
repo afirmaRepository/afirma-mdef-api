@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLLook>
+	<signaturePosition imagePage="src\test\resources\SignatureLogo.png">2</signaturePosition>
+	<Rect x0="19" y0="100" x1="93" y1="138"/>
+	<!--  <params>
+		<location>Madrid</location>
+		<reason>la mia</reason>
+		<contactInfo>yo</contactInfo>
+	</params>-->
+	<Background>
+		<image encodeType="uri">
+			<data>src\test\resources\SignatureLogo.png</data>
+			<imageSize width="84" height="38"/>
+			<position x="19" y="100"/>
+		</image>
+	</Background>
+</XMLLook>
