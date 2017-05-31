@@ -14,6 +14,7 @@
 		<afirma.keytool.alias>codesign</afirma.keytool.alias>
 		<afirma.keytool.password>afirma</afirma.keytool.password>
 		<springframework.version>4.0.1.RELEASE</springframework.version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>		
 	</properties>
 
 	<dependencies>
@@ -87,7 +88,43 @@
 				<signedjar>${project.build.directory}/${project.build.finalName}-signed.jar</signedjar> 
 				<verify>true</verify> <archive> <addMavenDescriptor>false</addMavenDescriptor> 
 				</archive> </configuration> </plugin> -->
-
+ 		    <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.6</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>xjc</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <!-- The schema directory or xsd files. -->
+                <schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
+                <!-- The package in which the source files will be generated. -->
+                <packageName>es.gob.afirma.mdef.pdf.model.sign</packageName>
+                <!-- The working directory to create the generated java source files. -->
+                <outputDirectory>${basedir}/src/main/java</outputDirectory>
+            </configuration>                
+<!--                  <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <xjbSources>
+                        <xjbSource>${project.basedir}/src/main/resources/global.xjb</xjbSource>
+                    </xjbSources>
+                    <sources>
+                        <source>${project.basedir}/src/main/resources/config.xsd</source>
+                    </sources>
+	                <packageName>es.gob.afirma.mdef.pdf.model.sign</packageName>                    
+                </configuration> 		    
+-->            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>

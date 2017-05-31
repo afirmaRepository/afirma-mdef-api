@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.security.KeyStore.Entry.Attribute;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +62,7 @@ public class KeyOneApiTest {
         assertNotNull(keyOneApi);
     }    
     
-    //@Test
+    @Test
     //OK
     /*
      i.	Añadir página: Incorporación de una página en blanco al final de un documento PDF.
@@ -74,7 +76,7 @@ public class KeyOneApiTest {
         assertEquals(numPageBefore+1,numPageAfter);
     }    
 
-    //@Test   
+    @Test   
     //OK
     /*
     ii.	Contar campos de firma: Obtención del número de campos de firma (vacíos o no) de un documento PDF. 
@@ -85,7 +87,7 @@ public class KeyOneApiTest {
     	assertEquals("Signature1"	,keyOneApi.enumSignatureFieldNames(SING_PDF_FILE));
 	}
     
-    //@Test
+    @Test
 	//OK
 	/*
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
@@ -96,7 +98,7 @@ public class KeyOneApiTest {
     }    
    
     
-    //@Test
+    @Test
     //OK
 	/*
 	 * iv.	Añadir campo de firma: Añadir un campo de firma vacío en cualquier página de un documento PDF, 
@@ -107,14 +109,15 @@ public class KeyOneApiTest {
     	assertEquals("SIGNATURE",keyOneApi.enumSignatureFieldNames(PDF_FILE_TEST));
     }   																	// PdfException;
     
-    @Test
+    //@Test
     //funciona
     /*
      * v.	El interfaz de programación permitirá seleccionar el certificado de firma por su identificador
      *  de política de certificación (extensión CertificatePolicies).
      */
 	public void testGetPrivateKeyEntry() throws Exception{
-		keyOneApi.getPrivateKeyEntry(getCertFilters());
+    	PrivateKeyEntry pke = keyOneApi.getPrivateKeyEntry(getCertFilters());
+    	assertNotNull(pke);
     }
 
     //@Test
@@ -124,7 +127,6 @@ public class KeyOneApiTest {
      * de una tarjeta (almacén de certificados).
      */
 	public void testGetCNCert() throws Exception{
-		System.out.println(keyOneApi.getCNCert(getCertFilters()));
 		assertEquals("USUARIO PRUEBA PKI10 |X00000040", keyOneApi.getCNCert(getCertFilters()));
 	}
 
@@ -141,6 +143,7 @@ public class KeyOneApiTest {
      */
     public void testPdfSign() throws Exception{
     	keyOneApi.pdfSign(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOK);
+    	assertTrue(keyOneApi.verifySignature(SING_PDF_FILE_NEW));
     }	
     
 	
@@ -178,6 +181,11 @@ public class KeyOneApiTest {
     
     
     
+    /*
+     * con esta función se pretende probar las política de certificación (extensión CertificatePolicies)
+     * http://publib.boulder.ibm.com/tividd/td/IBM_TA/SH09-4532-01/es_ES/HTML/iausmst69.HTM
+     * aqui se está probando la extensión estandar key usage
+     */
 	private List<? extends CertificateFilter> getCertFilters() {
 		final List<CertificateFilter> filters = new ArrayList<>();
 		filters.add(new KeyUsageFilter(KeyUsageFilter.SIGN_CERT_USAGE));

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Otam Galron 
+	(Galgalatz) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="SflyConfig" type="SflyConfigType" />
+	<!-- ********** SFLY CONFIG ***************************************** -->
+	<xsd:complexType name="SflyConfigType">
+		<xsd:sequence>
+			<xsd:element name="PdfAttributes" type="PdfAttributesType" />
+			<xsd:element name="Appearance" type="AppearanceType"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- *********** ENUMERATIONS TYPES ***************************************** -->
+	<xsd:simpleType name="signAlgType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SHA1" />
+			<xsd:enumeration value="DETACHED" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="validationMethodType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="PPKMS" />
+			<xsd:enumeration value="PPKLITE" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="imageEncodingType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="base64" />
+			<xsd:enumeration value="uri" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SignatureInfoID">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Subject" />
+			<xsd:enumeration value="Issuer" />
+			<xsd:enumeration value="SerialNumber" />
+			<xsd:enumeration value="Reason" />
+			<xsd:enumeration value="Location" />
+			<xsd:enumeration value="ContactInfo" />
+			<xsd:enumeration value="Date" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ******* PDF ATTRIBUTES DEFINITION ***************************************** -->
+	<xsd:complexType name="PdfAttributesType">
+		<xsd:sequence>
+			<xsd:element name="signatureAlg" type="signAlgType" />
+			<xsd:element name="validationMethod" type="validationMethodType" />
+			<xsd:element name="signaturePosition" type="xsd:positiveInteger"
+				minOccurs="0" />
+			<xsd:element name="params" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="location" type="xsd:string"
+							minOccurs="0" />
+						<xsd:element name="reason" type="xsd:string"
+							minOccurs="0" />
+						<xsd:element name="contactInfo" type="xsd:string"
+							minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ******** APPEARANCE DEFINITION ***************************************** -->
+	<xsd:complexType name="AppearanceType">
+		<xsd:sequence>
+			<xsd:element name="Rect" type="RectType" minOccurs="0" />
+			<xsd:element name="Background" type="BackgroundType"
+				minOccurs="0" />
+			<xsd:element name="Foreground" type="ForegroundType"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- RECT DEFINITION -->
+	<xsd:complexType name="RectType">
+		<xsd:attribute name="x0" type="xsd:positiveInteger" use="required" />
+		<xsd:attribute name="y0" type="xsd:positiveInteger" use="required" />
+		<xsd:attribute name="x1" type="xsd:positiveInteger" use="required" />
+		<xsd:attribute name="y1" type="xsd:positiveInteger" use="required" />
+	</xsd:complexType>
+	<!-- BACKGROUND DEFINITION -->
+	<xsd:complexType name="BackgroundType">
+		<xsd:sequence>
+			<xsd:element name="image" type="ImageType" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- FOREGROUND DEFINITION -->
+	<xsd:complexType name="ForegroundType">
+		<xsd:sequence>
+			<xsd:element name="image" type="ImageType" minOccurs="0" />
+			<xsd:element name="text" type="TextType" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- IMAGE DEFINITION -->
+	<xsd:complexType name="ImageType">
+		<xsd:sequence>
+			<xsd:element name="data" />
+			<xsd:element name="imageSize" minOccurs="0">
+				<xsd:complexType>
+					<xsd:attribute name="width" type="xsd:positiveInteger"
+						use="required" />
+					<xsd:attribute name="height" type="xsd:positiveInteger"
+						use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="position" type="PositionType"
+				minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="encodeType" type="imageEncodingType"
+			use="required" />
+	</xsd:complexType>
+	<!-- TEXT DEFINITION -->
+	<xsd:complexType name="TextType">
+		<xsd:sequence>
+			<xsd:element name="properties" minOccurs="0">
+				<xsd:complexType>
+					<xsd:attribute name="color" type="xsd:string" use="required" />
+					<xsd:attribute name="fontSize" type="xsd:positiveInteger"
+						use="required" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="position" type="PositionType"
+				minOccurs="0" />
+			<xsd:element name="SignatureInfos" type="SignatureInfosType"
+				minOccurs="0" />
+			<xsd:element name="ArbitraryText" type="ArbitraryTextType"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- SignatureInfos DEFINITION -->
+	<xsd:complexType name="SignatureInfosType">
+		<xsd:sequence>
+			<xsd:element name="signatureInfo" minOccurs="0"
+				maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="title" type="xsd:string" use="required" />
+					<xsd:attribute name="id" type="SignatureInfoID" use="required" />
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ArbitraryText DEFINITION -->
+	<xsd:complexType name="ArbitraryTextType">
+		<xsd:sequence>
+			<xsd:element name="textItem" type="TextItemType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- TextItemType DEFINITION -->
+	<xsd:complexType name="TextItemType">
+		<xsd:sequence>
+			<xsd:element name="font" type="FontType" minOccurs="0" />
+			<xsd:element name="position" type="PositionType" />
+			<xsd:element name="text" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- FontType DEFINITION -->
+	<xsd:complexType name="FontType">
+		<xsd:attribute name="fontSize" type="xsd:positiveInteger"
+			use="required" />
+	</xsd:complexType>
+	<!-- POSITION DEFINITION -->
+	<xsd:complexType name="PositionType">
+		<xsd:attribute name="x" type="xsd:nonNegativeInteger"
+			use="required" />
+		<xsd:attribute name="y" type="xsd:nonNegativeInteger"
+			use="required" />
+	</xsd:complexType>
+</xsd:schema>

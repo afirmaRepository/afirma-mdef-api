@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SflyConfig>
+  <PdfAttributes>
+    <signatureAlg>SHA1</signatureAlg>
+    <validationMethod>PPKMS</validationMethod>
+    <signaturePosition>745</signaturePosition>
+    <params>
+      <location>str1234</location>
+      <reason>str1234</reason>
+      <contactInfo>str1234</contactInfo>
+    </params>
+  </PdfAttributes>
+  <Appearance>
+    <Rect x0="745" y0="745" x1="745" y1="745" />
+    <Background>
+      <image encodeType="base64">
+        <data />
+        <imageSize width="745" height="745" />
+        <position x="33" y="33" />
+      </image>
+    </Background>
+    <Foreground>
+      <image encodeType="base64">
+        <data />
+        <imageSize width="745" height="745" />
+        <position x="33" y="33" />
+      </image>
+      <text>
+        <properties color="str1234" fontSize="745" />
+        <position x="33" y="33" />
+        <SignatureInfos>
+          <signatureInfo title="str1234" id="Subject" />
+        </SignatureInfos>
+        <ArbitraryText>
+          <textItem>
+            <font fontSize="745" />
+            <position x="33" y="33" />
+            <text>str1234</text>
+          </textItem>
+        </ArbitraryText>
+      </text>
+    </Foreground>
+  </Appearance>
+</SflyConfig>
