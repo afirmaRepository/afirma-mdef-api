@@ -95,7 +95,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public String enumSignatureFieldNames(String filePath) {
+	public String camposFirmaPDF(String filePath) {
 		final StringBuilder sb = new StringBuilder();
 		try (final InputStream fis = new FileInputStream(new File(filePath))) {
 			final byte[] data = AOUtil.getDataFromInputStream(fis);
@@ -126,7 +126,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 	
 	@Override
-	public int getPdfPageNumber(String filePath) {
+	public int numeroPaginasPDF(String filePath) {
 		PdfReader pdfReader = null;
 		try {
 			pdfReader = new PdfReader(filePath);
@@ -140,7 +140,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 
 	
 	@Override
-	public void addBlankPage(String filePath) {
+	public void anadirPaginaBlancaPDF(String filePath) {
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			final PdfReader pdfReader = new PdfReader(filePath);
 			final Calendar cal = Calendar.getInstance();
@@ -161,7 +161,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public String doBatchSign(String xmlPath, String alias, String password) throws Exception{
+	public String firmaBatch(String xmlPath, String alias, String password) throws Exception{
 		// Conversion del fichero XML a bytes
 		byte [] xmlBytes = null;
 		File f = new File(xmlPath);
@@ -223,7 +223,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public void pdfSign(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
+	public void firmaFinal(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
 			String tsaName, String xmlLook) throws XMLException, AOCertificatesNotFoundException,
 			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException {
 		final AOSigner signer = AOSignerFactory.getSigner(AOSignConstants.SIGN_FORMAT_PADES);
@@ -264,7 +264,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 		}
 		PrivateKeyEntry pke = null;
         try {
-            pke = getPrivateKeyEntry(filters);
+            pke = recuperaClavePrivada(filters);
         }
         catch (final AOCancelledOperationException e) {
         	throw e; 
@@ -329,7 +329,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public boolean verifySignature(String filePath) {
+	public boolean verificarFirmasPDF(String filePath) {
 		byte[] sign = null;
 		try ( final FileInputStream fis = new FileInputStream(new File(filePath)) ) {
 			sign = AOUtil.getDataFromInputStream(fis);
@@ -349,7 +349,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public PrivateKeyEntry getPrivateKeyEntry(List<? extends CertificateFilter> filters)
+	public PrivateKeyEntry recuperaClavePrivada(List<? extends CertificateFilter> filters)
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
 			KeyStoreException, NoSuchAlgorithmException {
 		final AOKeyStoreManager ksm = SimpleKeyStoreManager.getKeyStore(false, null);
@@ -370,9 +370,9 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 
 	@Override
-	public void addSignField(String filePath, int page, int leftX, int leftY, int rightX, int rightY)
+	public void anadirCampoFirma(String filePath, int page, int leftX, int leftY, int rightX, int rightY)
 			throws DocumentException, IOException {
-		int pageNbr = getPdfPageNumber(filePath);
+		int pageNbr = numeroPaginasPDF(filePath);
 		if(page > pageNbr || page < pageNbr*-1) {
 			throw new IllegalArgumentException("El numero de pagina no puede ser superior al numero total"); //$NON-NLS-1$
 		}
@@ -412,7 +412,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 	}
 	
 	@Override
-	public String getCNCert(List<? extends CertificateFilter> filters) 
+	public String cnTarjeta(List<? extends CertificateFilter> filters) 
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
 			KeyStoreException, NoSuchAlgorithmException{
 		String cnTarjeta = null;

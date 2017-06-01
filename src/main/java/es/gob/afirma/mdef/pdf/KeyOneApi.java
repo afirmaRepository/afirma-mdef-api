@@ -29,7 +29,7 @@ public interface KeyOneApi {
 	 * @throws PdfException
 	 *             Error al gestionar el documento pdf.
 	 */
-	public String enumSignatureFieldNames(final String filePath);// throws
+	public String camposFirmaPDF(final String filePath);// throws
 																	// PdfException;
 
 	/**
@@ -41,7 +41,7 @@ public interface KeyOneApi {
 	 * @throws PdfException
 	 *             Error al gestionar el documento pdf.
 	 */
-	public int getPdfPageNumber(final String filePath);// throws PdfException;
+	public int numeroPaginasPDF(final String filePath);// throws PdfException;
 
 	/**
 	 * Agrega una p&aacute;gina en blanco al final del documento pdf.
@@ -51,7 +51,7 @@ public interface KeyOneApi {
 	 * @throws PdfException
 	 *             Error al gestionar el fichero pdf.
 	 */
-	public void addBlankPage(final String filePath);// throws PdfException;
+	public void anadirPaginaBlancaPDF (final String filePath);// throws PdfException;
 
 	/**
 	 * Realiza la firma en lotes sobre los documentos definidos en un fichero
@@ -67,7 +67,7 @@ public interface KeyOneApi {
 	 * @throws Exception
 	 *             Error en la firma por lotes
 	 */
-	public String doBatchSign(final String xmlPath, String alias, String password) throws Exception;
+	public String firmaBatch(final String xmlPath, String alias, String password) throws Exception;
 
 	/**
 	 * Firma del fichero pdf.
@@ -97,7 +97,7 @@ public interface KeyOneApi {
 	 * @throws PdfHasUnregisteredSignaturesException
 	 *             Firma del pdf no registrada.
 	 */
-	public void pdfSign(final String originalPath, final String destinyPath, final String policyIdentifier,
+	public void firmaFinal(final String originalPath, final String destinyPath, final String policyIdentifier,
 			final String fieldName, final String tsaName, final String xmlLook) throws // PdfException,
 	XMLException, AOCertificatesNotFoundException, BadPdfPasswordException, PdfIsCertifiedException,
 			PdfHasUnregisteredSignaturesException;
@@ -111,7 +111,7 @@ public interface KeyOneApi {
 	 * @throws PdfException
 	 *             Error en la apertura o en el acceso al fichero.
 	 */
-	public boolean verifySignature(final String filePath);// throws
+	public boolean verificarFirmasPDF(final String filePath);// throws
 															// PdfException;
 
 	/**
@@ -131,7 +131,7 @@ public interface KeyOneApi {
 	 * @throws NoSuchAlgorithmException
 	 *             No existe el algoritmo.
 	 */
-	public PrivateKeyEntry getPrivateKeyEntry(final List<? extends CertificateFilter> filters)
+	public PrivateKeyEntry recuperaClavePrivada(final List<? extends CertificateFilter> filters)
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
 			KeyStoreException, NoSuchAlgorithmException;
 
@@ -163,7 +163,7 @@ public interface KeyOneApi {
 	 * @throws IllegalArgumentException
 	 *             N&uacute;mero de p&aacute;gina fuera de los l&iacute;mites.
 	 */
-	public void addSignField(final String filePath, final int page, final int leftX, final int leftY, final int rightX,
+	public void anadirCampoFirma(final String filePath, final int page, final int leftX, final int leftY, final int rightX,
 			final int rightY) throws DocumentException, IOException;// ,
 																	// PdfException;
 	
@@ -185,7 +185,7 @@ public interface KeyOneApi {
 	 * @throws NoSuchAlgorithmException
 	 *             No existe el algoritmo.
 	 */
-	public String getCNCert(final List<? extends CertificateFilter> filters) 
+	public String cnTarjeta (final List<? extends CertificateFilter> filters) 
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
 			KeyStoreException, NoSuchAlgorithmException;// throws
 															// PdfException;
