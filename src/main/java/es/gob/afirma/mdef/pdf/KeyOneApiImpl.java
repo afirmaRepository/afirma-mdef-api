@@ -283,7 +283,7 @@ public class KeyOneApiImpl implements KeyOneApi {
 		);
 
         try {
-			new XMLLookParser(xmlLook, field, p, pke).parse();
+			new XMLLookUnmarsall(xmlLook, field, p, pke).parse();
 		} catch (es.gob.afirma.mdef.pdf.XMLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

@@ -37,6 +37,7 @@ public class KeyOneApiTest {
     private static final String SING_PDF_FILE_NEW = "src/test/resources/Agenda Codemotion 2016_new_signed.pdf";
     private static final String SING_PDF_FILE = "src/test/resources/Agenda Codemotion 2016_signed.pdf";
     private static final String XMLLOOK = "src/test/resources/XMLLook.xml";
+    private static final String XMLLOOKSIMENDEF = "src/test/resources/configPrueba2.xml";
 	
     @Autowired
      private KeyOneApi keyOneApi;
@@ -62,7 +63,7 @@ public class KeyOneApiTest {
         assertNotNull(keyOneApi);
     }    
     
-    @Test
+    //@Test
     //OK
     /*
      i.	Añadir página: Incorporación de una página en blanco al final de un documento PDF.
@@ -76,7 +77,7 @@ public class KeyOneApiTest {
         assertEquals(numPageBefore+1,numPageAfter);
     }    
 
-    @Test   
+    //@Test   
     //OK
     /*
     ii.	Contar campos de firma: Obtención del número de campos de firma (vacíos o no) de un documento PDF. 
@@ -87,7 +88,7 @@ public class KeyOneApiTest {
     	assertEquals("Signature1"	,keyOneApi.enumSignatureFieldNames(SING_PDF_FILE));
 	}
     
-    @Test
+    //@Test
 	//OK
 	/*
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
@@ -98,7 +99,7 @@ public class KeyOneApiTest {
     }    
    
     
-    @Test
+    //@Test
     //OK
 	/*
 	 * iv.	Añadir campo de firma: Añadir un campo de firma vacío en cualquier página de un documento PDF, 
@@ -130,7 +131,7 @@ public class KeyOneApiTest {
 		assertEquals("USUARIO PRUEBA PKI10 |X00000040", keyOneApi.getCNCert(getCertFilters()));
 	}
 
-    //@Test
+    @Test
     //no está
     /*
      * vii.	Firmar documento PDF: Firma de un documento PDF, con claves externas, con las siguientes características:
@@ -142,7 +143,7 @@ public class KeyOneApiTest {
 		define la apariencia de firma; y devolverá una codificación de resultado.
      */
     public void testPdfSign() throws Exception{
-    	keyOneApi.pdfSign(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOK);
+    	keyOneApi.pdfSign(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOKSIMENDEF);
     	assertTrue(keyOneApi.verifySignature(SING_PDF_FILE_NEW));
     }	
     

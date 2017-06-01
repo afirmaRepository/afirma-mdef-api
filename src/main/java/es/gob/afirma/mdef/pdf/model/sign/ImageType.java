@@ -57,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
 public class ImageType {
 
     @XmlElement(required = true)
-    protected Object data;
+    protected String data;
     protected ImageType.ImageSize imageSize;
     protected PositionType position;
     @XmlAttribute(name = "encodeType", required = true)
@@ -71,7 +71,7 @@ public class ImageType {
      *     {@link Object }
      *     
      */
-    public Object getData() {
+    public String getData() {
         return data;
     }
 
@@ -83,7 +83,7 @@ public class ImageType {
      *     {@link Object }
      *     
      */
-    public void setData(Object value) {
+    public void setData(String value) {
         this.data = value;
     }
 

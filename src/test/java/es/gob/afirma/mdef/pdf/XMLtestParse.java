@@ -10,10 +10,11 @@ public class XMLtestParse {
 
     private static final String XMLLOOK = "src/test/resources/XMLLook.xml";
     private static final String XMLLOOKWHITIMAGE = "src/test/resources/XMLLook.xml";
+    private static final String XMLLOOKSIMENDEF = "src/test/resources/configPrueba2.xml";
 	
-    @Test
+    //@Test
     public void testParseoXML() throws Exception {
-    	XMLLookParser xmlLookParser= new XMLLookParser(XMLLOOK, new Properties());
+    	XMLLookParser xmlLookParser= new XMLLookParser(XMLLOOKSIMENDEF, new Properties());
     	xmlLookParser.parse();
     	assertEquals(xmlLookParser.getProperties().getProperty("imagePage"),"2");
     	assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageLowerLeftX"),"24");
@@ -26,10 +27,48 @@ public class XMLtestParse {
     }    
 
     //@Test
-    public void testParseoXMLWhitImage() throws Exception {
-    	XMLLookParser xmlLookParser= new XMLLookParser(XMLLOOK, new Properties());
+    public void testParseoXMLSIMENDEF() throws Exception {
+    	XMLLookParser xmlLookParser= new XMLLookParser(XMLLOOKSIMENDEF, new Properties());
     	xmlLookParser.parse();
+    	System.out.println(xmlLookParser.getProperties());
+    	assertEquals(xmlLookParser.getProperties().getProperty("imagePage"),"2"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageUpperRightY"),"250"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageUpperRightX"),"500"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageLowerLeftY"),"50"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageLowerLeftX"),"100"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageLowerLeftY"),"50"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageLowerLeftX"),"100"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageUpperRightY"),"250"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageUpperRightX"),"500");
+    }    
+    
+    //@Test
+    public void testParseoXMLSIMENDEF2() throws Exception {
+    	XMLLookUnmarsall xmlLookParser= new XMLLookUnmarsall(XMLLOOKSIMENDEF, new Properties());
+    	xmlLookParser.parse();
+    	assertEquals(xmlLookParser.getProperties().getProperty("imagePage"),"2"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageUpperRightY"),"250"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageUpperRightX"),"500"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageLowerLeftY"),"50"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageLowerLeftX"),"100"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageLowerLeftY"),"50"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("signaturePositionOnPageLowerLeftX"),"100"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageUpperRightY"),"250"); 
+		assertEquals(xmlLookParser.getProperties().getProperty("imagePositionOnPageUpperRightX"),"500");
+		assertEquals(xmlLookParser.getProperties().getProperty("signatureProductionCity"),"Madrid");
+		assertEquals(xmlLookParser.getProperties().getProperty("signReason"),"Soy el autor del documento");
+		System.out.println(xmlLookParser.getProperties().getProperty("layer2Text"));
+		//assertEquals(xmlLookParser.getProperties().getProperty("layer2FontColor"),"black");
     }    
 
+    @Test
+    public void testCompareImage() throws Exception {
+    	XMLLookParser xmlLookParser= new XMLLookParser(XMLLOOKSIMENDEF, new Properties());
+    	xmlLookParser.parse();
+    	XMLLookUnmarsall xmlLookParser2= new XMLLookUnmarsall(XMLLOOKSIMENDEF, new Properties());
+    	xmlLookParser2.parse();
+    	assertEquals(xmlLookParser.getProperties().getProperty("signatureRubricImage"),
+    			xmlLookParser.getProperties().getProperty("signatureRubricImage"));
+    }
 
 }

@@ -106,25 +106,9 @@
                 <packageName>es.gob.afirma.mdef.pdf.model.sign</packageName>
                 <!-- The working directory to create the generated java source files. -->
                 <outputDirectory>${basedir}/src/main/java</outputDirectory>
+				<clearOutputDir>false</clearOutputDir>                
             </configuration>                
-<!--                  <executions>
-                    <execution>
-                        <id>xjc</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <xjbSources>
-                        <xjbSource>${project.basedir}/src/main/resources/global.xjb</xjbSource>
-                    </xjbSources>
-                    <sources>
-                        <source>${project.basedir}/src/main/resources/config.xsd</source>
-                    </sources>
-	                <packageName>es.gob.afirma.mdef.pdf.model.sign</packageName>                    
-                </configuration> 		    
--->            </plugin>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
