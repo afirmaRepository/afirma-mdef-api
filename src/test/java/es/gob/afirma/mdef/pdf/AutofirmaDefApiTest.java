@@ -30,7 +30,7 @@ import es.gob.afirma.keystores.filters.rfc.KeyUsageFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:aplicationContext-mdef-api.xml"})
-public class KeyOneApiTest {
+public class AutofirmaDefApiTest {
 
 	private static final String PDF_FILE = "src/test/resources/Agenda_Codemotion 2016.pdf";
     private static final String PDF_FILE_TEST = "src/test/resources/Agenda_Codemotion 2016forTest.pdf";
@@ -40,7 +40,7 @@ public class KeyOneApiTest {
     private static final String XMLLOOKSIMENDEF = "src/test/resources/configPrueba2.xml";
 	
     @Autowired
-     private KeyOneApi keyOneApi;
+     private AutofirmaDefApi keyOneApi;
     
     //copiamos el fichero que se va a utilzar para pruebas
     //en otro fichero para que este sea el mismo siempre en las pruebas

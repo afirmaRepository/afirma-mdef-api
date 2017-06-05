@@ -67,7 +67,7 @@ import es.gob.afirma.standalone.ui.preferences.PreferencesManager;
 import nu.xom.XMLException;
 
 @Service
-public class KeyOneApiImpl implements KeyOneApi {
+public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 
 	private static final String SEPARATOR = ","; //$NON-NLS-1$
 	private static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); //$NON-NLS-1$

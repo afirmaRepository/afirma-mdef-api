@@ -18,7 +18,7 @@ import es.gob.afirma.signers.pades.PdfIsCertifiedException;
 import nu.xom.XMLException;
 //import es.gob.afirma.mdef.pdf.PdfException;
 
-public interface KeyOneApi {
+public interface AutofirmaDefApi {
 
 	/**
 	 * Obtiene los nombres de los campos de firma de un documento pdf.
