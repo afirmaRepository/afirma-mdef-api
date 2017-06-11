@@ -2,7 +2,7 @@
 // Este archivo ha sido generado por la arquitectura JavaTM para la implantación de la referencia de enlace (JAXB) XML v2.2.7 
 // Visite <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Todas las modificaciones realizadas en este archivo se perderán si se vuelve a compilar el esquema de origen. 
-// Generado el: 2017.05.31 a las 10:36:20 AM CEST 
+// Generado el: 2017.06.11 a las 11:06:16 PM CEST 
 //
 
 
@@ -11,7 +11,6 @@ package es.gob.afirma.mdef.pdf.model.sign;
 import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -26,8 +25,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="signatureAlg" type="{}signAlgType"/>
- *         &lt;element name="validationMethod" type="{}validationMethodType"/>
  *         &lt;element name="signaturePosition" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
  *         &lt;element name="params" minOccurs="0">
  *           &lt;complexType>
@@ -52,68 +49,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PdfAttributesType", propOrder = {
-    "signatureAlg",
-    "validationMethod",
     "signaturePosition",
     "params"
 })
 public class PdfAttributesType {
 
-    @XmlElement(required = true)
-    protected SignAlgType signatureAlg;
-    @XmlElement(required = true)
-    protected ValidationMethodType validationMethod;
     @XmlSchemaType(name = "positiveInteger")
     protected BigInteger signaturePosition;
     protected PdfAttributesType.Params params;
-
-    /**
-     * Obtiene el valor de la propiedad signatureAlg.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SignAlgType }
-     *     
-     */
-    public SignAlgType getSignatureAlg() {
-        return signatureAlg;
-    }
-
-    /**
-     * Define el valor de la propiedad signatureAlg.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SignAlgType }
-     *     
-     */
-    public void setSignatureAlg(SignAlgType value) {
-        this.signatureAlg = value;
-    }
-
-    /**
-     * Obtiene el valor de la propiedad validationMethod.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ValidationMethodType }
-     *     
-     */
-    public ValidationMethodType getValidationMethod() {
-        return validationMethod;
-    }
-
-    /**
-     * Define el valor de la propiedad validationMethod.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ValidationMethodType }
-     *     
-     */
-    public void setValidationMethod(ValidationMethodType value) {
-        this.validationMethod = value;
-    }
 
     /**
      * Obtiene el valor de la propiedad signaturePosition.

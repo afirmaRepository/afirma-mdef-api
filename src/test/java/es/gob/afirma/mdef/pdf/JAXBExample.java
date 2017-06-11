@@ -7,10 +7,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import es.gob.afirma.mdef.pdf.model.sign.BackgroundType;
+import es.gob.afirma.mdef.pdf.model.sign.AfirmaConfigType;
 import es.gob.afirma.mdef.pdf.model.sign.ForegroundType;
 import es.gob.afirma.mdef.pdf.model.sign.ObjectFactory;
-import es.gob.afirma.mdef.pdf.model.sign.SflyConfigType;
 
 public class JAXBExample {
 
@@ -27,10 +26,10 @@ public class JAXBExample {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			//SflyConfigType customer = (SflyConfigType) jaxbUnmarshaller.unmarshal(file);
 			//System.out.println(customer);
-			JAXBElement<SflyConfigType> je = (JAXBElement<SflyConfigType>) jaxbUnmarshaller.unmarshal(file);
-			SflyConfigType sflyConfig =je.getValue();
+			JAXBElement<AfirmaConfigType> je = (JAXBElement<AfirmaConfigType>) jaxbUnmarshaller.unmarshal(file);
+			AfirmaConfigType sflyConfig =je.getValue();
 			System.out.println(sflyConfig.getPdfAttributes().getSignaturePosition());
-			BackgroundType background = sflyConfig.getAppearance().getBackground();
+			//BackgroundType background = sflyConfig.getAppearance().getBackground();
 			ForegroundType foreground = sflyConfig.getAppearance().getForeground();
 
 		  } catch (JAXBException e) {

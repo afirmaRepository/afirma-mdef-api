@@ -40,7 +40,7 @@ public class AutofirmaDefApiTest {
     private static final String XMLLOOKSIMENDEF = "src/test/resources/configPrueba2.xml";
 	
     @Autowired
-     private AutofirmaDefApi keyOneApi;
+     private AutofirmaDefApi autofirmaDefApi;
     
     //copiamos el fichero que se va a utilzar para pruebas
     //en otro fichero para que este sea el mismo siempre en las pruebas
@@ -58,9 +58,9 @@ public class AutofirmaDefApiTest {
     	deleteFileForTest(dest);    	
     }
     
-    @Test
+    //@Test
     public void shouldBeInjected() throws Exception {
-        assertNotNull(keyOneApi);
+        assertNotNull(autofirmaDefApi);
     }    
     
     //@Test
@@ -71,9 +71,9 @@ public class AutofirmaDefApiTest {
 		documento PDF con una página en blanco añadida. 
      */
     public void testAddBlankPage() throws Exception {
-        int numPageBefore = keyOneApi.numeroPaginasPDF(PDF_FILE_TEST);
-    	keyOneApi.anadirPaginaBlancaPDF(PDF_FILE_TEST);
-        int numPageAfter = keyOneApi.numeroPaginasPDF(PDF_FILE_TEST);
+        int numPageBefore = autofirmaDefApi.numeroPaginasPDF(PDF_FILE_TEST);
+    	autofirmaDefApi.anadirPaginaBlancaPDF(PDF_FILE_TEST);
+        int numPageAfter = autofirmaDefApi.numeroPaginasPDF(PDF_FILE_TEST);
         assertEquals(numPageBefore+1,numPageAfter);
     }    
 
@@ -85,7 +85,7 @@ public class AutofirmaDefApiTest {
 		(y adicionalmente los campos de firma en blanco) existentes en el documento. 
     */
 	public void testEnumSignatureFieldNames() throws Exception{
-    	assertEquals("Signature1"	,keyOneApi.camposFirmaPDF(SING_PDF_FILE));
+    	assertEquals("Signature1"	,autofirmaDefApi.camposFirmaPDF(SING_PDF_FILE));
 	}
     
     //@Test
@@ -94,7 +94,7 @@ public class AutofirmaDefApiTest {
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
 	 */
     public void testPdfPageNumber() throws Exception {
-        int numPage =keyOneApi.numeroPaginasPDF(PDF_FILE_TEST);
+        int numPage =autofirmaDefApi.numeroPaginasPDF(PDF_FILE_TEST);
         assertTrue(numPage==2);
     }    
    
@@ -106,8 +106,8 @@ public class AutofirmaDefApiTest {
 	 * especificando posición y tamaño del mismo.
 	 */
     public void testAddSignField() throws Exception {
-    	keyOneApi.anadirCampoFirma(PDF_FILE_TEST, 2, 24, 13, 60, 27);
-    	assertEquals("SIGNATURE",keyOneApi.camposFirmaPDF(PDF_FILE_TEST));
+    	autofirmaDefApi.anadirCampoFirma(PDF_FILE_TEST, 2, 24, 13, 60, 27);
+    	assertEquals("SIGNATURE",autofirmaDefApi.camposFirmaPDF(PDF_FILE_TEST));
     }   																	// PdfException;
     
     //@Test
@@ -117,7 +117,7 @@ public class AutofirmaDefApiTest {
      *  de política de certificación (extensión CertificatePolicies).
      */
 	public void testGetPrivateKeyEntry() throws Exception{
-    	PrivateKeyEntry pke = keyOneApi.recuperaClavePrivada(getCertFilters());
+    	PrivateKeyEntry pke = autofirmaDefApi.recuperaClavePrivada(getCertFilters());
     	assertNotNull(pke);
     }
 
@@ -128,7 +128,7 @@ public class AutofirmaDefApiTest {
      * de una tarjeta (almacén de certificados).
      */
 	public void testGetCNCert() throws Exception{
-		assertEquals("USUARIO PRUEBA PKI10 |X00000040", keyOneApi.cnTarjeta(getCertFilters()));
+		assertEquals("USUARIO PRUEBA PKI10 |X00000040", autofirmaDefApi.cnTarjeta(getCertFilters()));
 	}
 
     @Test
@@ -143,8 +143,8 @@ public class AutofirmaDefApiTest {
 		define la apariencia de firma; y devolverá una codificación de resultado.
      */
     public void testPdfSign() throws Exception{
-    	keyOneApi.firmaFinal(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOKSIMENDEF);
-    	assertTrue(keyOneApi.verificarFirmasPDF(SING_PDF_FILE_NEW));
+    	autofirmaDefApi.firmaFinal(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOKSIMENDEF);
+    	assertTrue(autofirmaDefApi.verificarFirmasPDF(SING_PDF_FILE_NEW));
     }	
     
 	
@@ -164,7 +164,7 @@ public class AutofirmaDefApiTest {
 		String filePath = xmlURL.getPath().replace("%20", " "); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// Alias y contrasena para firmar con el certificado autofirma.pfx
-		String ret = keyOneApi.firmaBatch(filePath, "USUARIO PRUEBA PKI10 |X00000040", "A111111a");  //$NON-NLS-1$ //$NON-NLS-2$
+		String ret = autofirmaDefApi.firmaBatch(filePath, "USUARIO PRUEBA PKI10 |X00000040", "A111111a");  //$NON-NLS-1$ //$NON-NLS-2$
         System.out.println(ret);
     	
     }
@@ -176,8 +176,8 @@ public class AutofirmaDefApiTest {
 		i.	En la práctica, se envía a la herramienta el path y nombre de un fichero y ésta devolverá el resultado de la verificación.
      */
     public void testVerifySignature() throws Exception{
-    	assertTrue(keyOneApi.verificarFirmasPDF(SING_PDF_FILE));
-    	assertFalse(keyOneApi.verificarFirmasPDF(PDF_FILE_TEST));
+    	assertTrue(autofirmaDefApi.verificarFirmasPDF(SING_PDF_FILE));
+    	assertFalse(autofirmaDefApi.verificarFirmasPDF(PDF_FILE_TEST));
     }
     
     

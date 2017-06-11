@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AfirmaConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="config.xsd">
+	<PdfAttributes>
+<!--		<signatureAlg>SHA1</signatureAlg>
+ 		<validationMethod>PPKMS</validationMethod>   -->
+		<signaturePosition>2</signaturePosition>
+		<params>
+			<location>Madrid</location>
+			<reason>Soy el autor del documento</reason>
+			<contactInfo>+34 555 666 777</contactInfo>
+		</params>
+	</PdfAttributes>
+	<Appearance>
+		<Rect x0="100" y0="50" x1="500" y1="250" />
+<!-- 		<Background>
+			<image encodeType="uri">
+				<data>src\test\resources\SignatureLogo.png</data>
+				<imageSize width="400" height="200" />
+				<position x="0" y="0" />
+			</image>
+		</Background>
+ -->		<Foreground>
+			<image encodeType="uri">
+				<!-- <data>c:\temp\foreground.jpg</data> -->
+				<data>src\test\resources\logoEjercito.png</data>
+				<!-- <imageSize width="150" height="200" /> -->
+				<imageSize width="400" height="200" />
+				<position x="0" y="0" />
+			</image>
+			<text>
+				<!--<properties color="0 0 0" fontSize="8" />
+				 <position x="170" y="20" /> -->
+				<properties color="0 0 0" fontSize="12"/>
+				<position x="100" y="50" />
+				<SignatureInfos>
+					<signatureInfo title="Autor de la firma: " id="Subject" />
+					<signatureInfo title="Emisor del certificado: " id="Issuer" />
+					<signatureInfo title="Número de serie: " id="SerialNumber" />
+					<signatureInfo title="Razón: " id="Reason" />
+					<signatureInfo title="Localización: " id="Location" />
+					<signatureInfo title="Información de contacto: " id="ContactInfo" />
+					<signatureInfo title="Fecha de firma: " id="Date" />
+				</SignatureInfos>
+				<ArbitraryText>
+					<textItem>
+						<font fontSize="8" />
+						<position x="170" y="100" />
+						<text>Texto arbitrario 1</text>
+					</textItem>
+					<textItem>
+						<font fontSize="8" />
+						<position x="170" y="80" />
+						<text>Texto arbitrario 2</text>
+					</textItem>
+				</ArbitraryText>
+			</text>
+		</Foreground>
+	</Appearance>
+</AfirmaConfig>

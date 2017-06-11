@@ -27,16 +27,15 @@ import javax.xml.bind.Unmarshaller;
 import org.w3c.dom.DOMException;
 
 import es.gob.afirma.core.misc.Base64;
+import es.gob.afirma.mdef.pdf.model.sign.AfirmaConfigType;
 import es.gob.afirma.mdef.pdf.model.sign.AppearanceType;
 import es.gob.afirma.mdef.pdf.model.sign.ArbitraryTextType;
-import es.gob.afirma.mdef.pdf.model.sign.BackgroundType;
 import es.gob.afirma.mdef.pdf.model.sign.ForegroundType;
 import es.gob.afirma.mdef.pdf.model.sign.ImageEncodingType;
 import es.gob.afirma.mdef.pdf.model.sign.ImageType;
 import es.gob.afirma.mdef.pdf.model.sign.ObjectFactory;
 import es.gob.afirma.mdef.pdf.model.sign.PdfAttributesType;
 import es.gob.afirma.mdef.pdf.model.sign.RectType;
-import es.gob.afirma.mdef.pdf.model.sign.SflyConfigType;
 import es.gob.afirma.mdef.pdf.model.sign.SignatureInfosType;
 import es.gob.afirma.mdef.pdf.model.sign.SignatureInfosType.SignatureInfo;
 import es.gob.afirma.mdef.pdf.model.sign.TextItemType;
@@ -112,14 +111,14 @@ public final class XMLLookUnmarsall {
 			final FileInputStream fis = new FileInputStream(this.xml);
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			SflyConfigType sflyConfig = (SflyConfigType)((JAXBElement<SflyConfigType>) jaxbUnmarshaller.unmarshal(fis)).getValue();
+			AfirmaConfigType afirmaConfig = (AfirmaConfigType)((JAXBElement<AfirmaConfigType>) jaxbUnmarshaller.unmarshal(fis)).getValue();
 			
 			if (this.field == null) {
-				final PdfAttributesType page = sflyConfig.getPdfAttributes();
+				final PdfAttributesType page = afirmaConfig.getPdfAttributes();
 				if (page != null) {
 					this.prop.setProperty("imagePage", page.getSignaturePosition().toString()); 
 				}
-				final AppearanceType appearance = sflyConfig.getAppearance();
+				final AppearanceType appearance = afirmaConfig.getAppearance();
 				if (null != appearance){
 					RectType rect =appearance.getRect();
 					if(null != rect){
@@ -133,15 +132,15 @@ public final class XMLLookUnmarsall {
 				this.rectHeight = this.field.getSignaturePositionOnPageUpperRightY() - this.field.getSignaturePositionOnPageLowerLeftY();
 			}
 
-			if (null != sflyConfig.getPdfAttributes()) {
-				setParams(sflyConfig.getPdfAttributes());
+			if (null != afirmaConfig.getPdfAttributes()) {
+				setParams(afirmaConfig.getPdfAttributes());
 			}
 			
-			if(null != sflyConfig.getAppearance()){
-				final AppearanceType appearance = sflyConfig.getAppearance();
-				if(null != appearance.getBackground()){
-					setBackgroundImage(appearance.getBackground());
-				}
+			if(null != afirmaConfig.getAppearance()){
+				final AppearanceType appearance = afirmaConfig.getAppearance();
+//				if(null != appearance.getBackground()){
+//					setBackgroundImage(appearance.getBackground());
+//				}
 				if(null != appearance.getForeground()){
 					setForeground(appearance.getForeground());
 				}
@@ -186,46 +185,46 @@ public final class XMLLookUnmarsall {
 		}
 	}
 	
-	private void setBackgroundImage(final BackgroundType background) throws DOMException, IOException, XMLException {
-		if(null != background.getImage()){
-			ImageType image = background.getImage();
-			BufferedImage im = null;
-			int width = 0;
-			int height = 0;
-			int posX = 0;
-			int posY = 0;
-			ImageEncodingType encodeType = image.getEncodeType();
-			
-			if(encodeType.compareTo(encodeType.BASE_64)==0){
-				im = getImageFromBase64(image.getData().toString());
-			}
-			if(encodeType.compareTo(encodeType.URI)==0){
-				try {
-					im = ImageIO.read(new File(image.getData().toString()));
-				} catch (final Exception e) {
-					LOGGER.severe("Error extrayendo propiedades del fondo: " + e); 
-					throw new XMLException("Error extrayendo propiedades del fondo: " + e, e); 
-				}
-			}
-			if(null != image.getImageSize()){
-				if(null != image.getImageSize().getHeight() && null != image.getImageSize().getHeight()){
-					width = image.getImageSize().getWidth().intValue(); 
-					height = image.getImageSize().getHeight().intValue(); 
-				}
-			}
-			if(null != image.getPosition()){
-				if(null != image.getPosition().getX() && null != image.getPosition().getY()){
-					posX = image.getPosition().getX().intValue(); 
-					posY = image.getPosition().getY().intValue(); 
-				}
-			}
-			if (im != null) {
-				paintImage(im, width, height, posX, posY);
-				saveImageProperties();
-			}
-			
-		}
-	}
+//	private void setBackgroundImage(final BackgroundType background) throws DOMException, IOException, XMLException {
+//		if(null != background.getImage()){
+//			ImageType image = background.getImage();
+//			BufferedImage im = null;
+//			int width = 0;
+//			int height = 0;
+//			int posX = 0;
+//			int posY = 0;
+//			ImageEncodingType encodeType = image.getEncodeType();
+//			
+//			if(encodeType.compareTo(encodeType.BASE_64)==0){
+//				im = getImageFromBase64(image.getData().toString());
+//			}
+//			if(encodeType.compareTo(encodeType.URI)==0){
+//				try {
+//					im = ImageIO.read(new File(image.getData().toString()));
+//				} catch (final Exception e) {
+//					LOGGER.severe("Error extrayendo propiedades del fondo: " + e); 
+//					throw new XMLException("Error extrayendo propiedades del fondo: " + e, e); 
+//				}
+//			}
+//			if(null != image.getImageSize()){
+//				if(null != image.getImageSize().getHeight() && null != image.getImageSize().getHeight()){
+//					width = image.getImageSize().getWidth().intValue(); 
+//					height = image.getImageSize().getHeight().intValue(); 
+//				}
+//			}
+//			if(null != image.getPosition()){
+//				if(null != image.getPosition().getX() && null != image.getPosition().getY()){
+//					posX = image.getPosition().getX().intValue(); 
+//					posY = image.getPosition().getY().intValue(); 
+//				}
+//			}
+//			if (im != null) {
+//				paintImage(im, width, height, posX, posY);
+//				saveImageProperties();
+//			}
+//			
+//		}
+//	}
 
 	private void setForeground(final ForegroundType foreground) throws DOMException, IOException, XMLException {
 		

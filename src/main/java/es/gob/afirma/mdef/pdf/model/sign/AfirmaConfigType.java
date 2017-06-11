@@ -2,7 +2,7 @@
 // Este archivo ha sido generado por la arquitectura JavaTM para la implantación de la referencia de enlace (JAXB) XML v2.2.7 
 // Visite <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Todas las modificaciones realizadas en este archivo se perderán si se vuelve a compilar el esquema de origen. 
-// Generado el: 2017.05.31 a las 10:36:20 AM CEST 
+// Generado el: 2017.06.11 a las 11:06:16 PM CEST 
 //
 
 
@@ -15,12 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Clase Java para SflyConfigType complex type.
+ * <p>Clase Java para AfirmaConfigType complex type.
  * 
  * <p>El siguiente fragmento de esquema especifica el contenido que se espera que haya en esta clase.
  * 
  * <pre>
- * &lt;complexType name="SflyConfigType">
+ * &lt;complexType name="AfirmaConfigType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -35,11 +35,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SflyConfigType", propOrder = {
+@XmlType(name = "AfirmaConfigType", propOrder = {
     "pdfAttributes",
     "appearance"
 })
-public class SflyConfigType {
+public class AfirmaConfigType {
 
     @XmlElement(name = "PdfAttributes", required = true)
     protected PdfAttributesType pdfAttributes;

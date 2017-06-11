@@ -2,7 +2,7 @@
 // Este archivo ha sido generado por la arquitectura JavaTM para la implantación de la referencia de enlace (JAXB) XML v2.2.7 
 // Visite <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Todas las modificaciones realizadas en este archivo se perderán si se vuelve a compilar el esquema de origen. 
-// Generado el: 2017.05.31 a las 10:36:20 AM CEST 
+// Generado el: 2017.06.11 a las 11:06:16 PM CEST 
 //
 
 
@@ -31,7 +31,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _SflyConfig_QNAME = new QName("", "SflyConfig");
+    private final static QName _AfirmaConfig_QNAME = new QName("", "AfirmaConfig");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: es.gob.afirma.mdef.pdf.model.sign
@@ -73,11 +73,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SflyConfigType }
+     * Create an instance of {@link AfirmaConfigType }
      * 
      */
-    public SflyConfigType createSflyConfigType() {
-        return new SflyConfigType();
+    public AfirmaConfigType createAfirmaConfigType() {
+        return new AfirmaConfigType();
     }
 
     /**
@@ -110,14 +110,6 @@ public class ObjectFactory {
      */
     public PositionType createPositionType() {
         return new PositionType();
-    }
-
-    /**
-     * Create an instance of {@link BackgroundType }
-     * 
-     */
-    public BackgroundType createBackgroundType() {
-        return new BackgroundType();
     }
 
     /**
@@ -177,12 +169,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link SflyConfigType }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link AfirmaConfigType }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "", name = "SflyConfig")
-    public JAXBElement<SflyConfigType> createSflyConfig(SflyConfigType value) {
-        return new JAXBElement<SflyConfigType>(_SflyConfig_QNAME, SflyConfigType.class, null, value);
+    @XmlElementDecl(namespace = "", name = "AfirmaConfig")
+    public JAXBElement<AfirmaConfigType> createAfirmaConfig(AfirmaConfigType value) {
+        return new JAXBElement<AfirmaConfigType>(_AfirmaConfig_QNAME, AfirmaConfigType.class, null, value);
     }
 
 }

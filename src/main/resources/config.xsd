@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Otam Galron 
-	(Galgalatz) -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<xsd:element name="SflyConfig" type="SflyConfigType" />
+	<xsd:element name="AfirmaConfig" type="AfirmaConfigType" />
 	<!-- ********** SFLY CONFIG ***************************************** -->
-	<xsd:complexType name="SflyConfigType">
+	<xsd:complexType name="AfirmaConfigType">
 		<xsd:sequence>
 			<xsd:element name="PdfAttributes" type="PdfAttributesType" />
 			<xsd:element name="Appearance" type="AppearanceType"
@@ -12,18 +10,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	<!-- *********** ENUMERATIONS TYPES ***************************************** -->
-	<xsd:simpleType name="signAlgType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="SHA1" />
-			<xsd:enumeration value="DETACHED" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	<xsd:simpleType name="validationMethodType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="PPKMS" />
-			<xsd:enumeration value="PPKLITE" />
-		</xsd:restriction>
-	</xsd:simpleType>
 	<xsd:simpleType name="imageEncodingType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="base64" />
@@ -44,8 +30,6 @@
 	<!-- ******* PDF ATTRIBUTES DEFINITION ***************************************** -->
 	<xsd:complexType name="PdfAttributesType">
 		<xsd:sequence>
-			<xsd:element name="signatureAlg" type="signAlgType" />
-			<xsd:element name="validationMethod" type="validationMethodType" />
 			<xsd:element name="signaturePosition" type="xsd:positiveInteger"
 				minOccurs="0" />
 			<xsd:element name="params" minOccurs="0">
@@ -66,8 +50,7 @@
 	<xsd:complexType name="AppearanceType">
 		<xsd:sequence>
 			<xsd:element name="Rect" type="RectType" minOccurs="0" />
-			<xsd:element name="Background" type="BackgroundType"
-				minOccurs="0" />
+			<!--<xsd:element name="Background" type="BackgroundType" minOccurs="0"/> -->
 			<xsd:element name="Foreground" type="ForegroundType"
 				minOccurs="0" />
 		</xsd:sequence>
@@ -79,12 +62,6 @@
 		<xsd:attribute name="x1" type="xsd:positiveInteger" use="required" />
 		<xsd:attribute name="y1" type="xsd:positiveInteger" use="required" />
 	</xsd:complexType>
-	<!-- BACKGROUND DEFINITION -->
-	<xsd:complexType name="BackgroundType">
-		<xsd:sequence>
-			<xsd:element name="image" type="ImageType" />
-		</xsd:sequence>
-	</xsd:complexType>
 	<!-- FOREGROUND DEFINITION -->
 	<xsd:complexType name="ForegroundType">
 		<xsd:sequence>
@@ -95,7 +72,7 @@
 	<!-- IMAGE DEFINITION -->
 	<xsd:complexType name="ImageType">
 		<xsd:sequence>
-			<xsd:element name="data" />
+			<xsd:element name="data" type="xsd:string" />
 			<xsd:element name="imageSize" minOccurs="0">
 				<xsd:complexType>
 					<xsd:attribute name="width" type="xsd:positiveInteger"

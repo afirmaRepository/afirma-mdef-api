@@ -2,7 +2,7 @@
 // Este archivo ha sido generado por la arquitectura JavaTM para la implantación de la referencia de enlace (JAXB) XML v2.2.7 
 // Visite <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Todas las modificaciones realizadas en este archivo se perderán si se vuelve a compilar el esquema de origen. 
-// Generado el: 2017.05.31 a las 10:36:20 AM CEST 
+// Generado el: 2017.06.11 a las 11:06:16 PM CEST 
 //
 
 
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}anyType"/>
+ *         &lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="imageSize" minOccurs="0">
  *           &lt;complexType>
  *             &lt;complexContent>
@@ -68,7 +68,7 @@ public class ImageType {
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
     public String getData() {
@@ -80,7 +80,7 @@ public class ImageType {
      * 
      * @param value
      *     allowed object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
     public void setData(String value) {

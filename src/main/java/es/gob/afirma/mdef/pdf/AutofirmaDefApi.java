@@ -189,5 +189,5 @@ public interface AutofirmaDefApi {
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
 			KeyStoreException, NoSuchAlgorithmException;// throws
 															// PdfException;
-	
+
 }

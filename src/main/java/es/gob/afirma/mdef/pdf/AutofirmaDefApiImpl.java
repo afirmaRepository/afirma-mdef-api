@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ import es.gob.afirma.cert.signvalidation.SignValiderFactory;
 import es.gob.afirma.cert.signvalidation.SignValidity.SIGN_DETAIL_TYPE;
 import es.gob.afirma.core.AOCancelledOperationException;
 import es.gob.afirma.core.misc.AOUtil;
+import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.AOSignerFactory;
@@ -56,6 +58,7 @@ import es.gob.afirma.keystores.AOKeystoreAlternativeException;
 import es.gob.afirma.keystores.AggregatedKeyStoreManager;
 import es.gob.afirma.keystores.filters.CertificateFilter;
 import es.gob.afirma.keystores.filters.PolicyIdFilter;
+import es.gob.afirma.local.BatchSigner;
 import es.gob.afirma.signers.pades.BadPdfPasswordException;
 import es.gob.afirma.signers.pades.PdfHasUnregisteredSignaturesException;
 import es.gob.afirma.signers.pades.PdfIsCertifiedException;
@@ -63,8 +66,10 @@ import es.gob.afirma.signers.pades.PdfUtil;
 import es.gob.afirma.signers.pades.PdfUtil.SignatureField;
 import es.gob.afirma.standalone.SimpleAfirmaMessages;
 import es.gob.afirma.standalone.SimpleKeyStoreManager;
+import es.gob.afirma.standalone.ui.preferences.ExtraParamsHelper;
 import es.gob.afirma.standalone.ui.preferences.PreferencesManager;
 import nu.xom.XMLException;
+
 
 @Service
 public class AutofirmaDefApiImpl implements AutofirmaDefApi {
@@ -199,11 +204,11 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 				 PrivateKeyEntry pke = aksm.getKeyEntry(alias);
 			 
 				 //Se firma con la clave privada
-//				 return BatchSigner.sign(
-//						Base64.encode(xmlBytes), 
-//						pke.getCertificateChain(), 
-//						pke.getPrivateKey()
-//					);
+				 return BatchSigner.sign(
+						Base64.encode(xmlBytes), 
+						pke.getCertificateChain(), 
+						pke.getPrivateKey()
+					);
 			 }
 /*		} catch (CertificateEncodingException | AOException e) {
 			LOGGER.severe("Error durante la firma por lotes: " + e); //$NON-NLS-1$
@@ -253,6 +258,8 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			policyFilter = new PolicyIdFilter(policyIdentifier);
 			p.setProperty("policyIdentifier", policyIdentifier); //$NON-NLS-1$
 		}
+        final Properties prefProps = ExtraParamsHelper.loadPAdESExtraParams();
+		
 		if (tsaName != null && !tsaName.isEmpty()) {
 			p.setProperty("tsaPolicy", tsaName); //$NON-NLS-1$
 		}
@@ -288,7 +295,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+        p.putAll(prefProps);
         final byte[] signResult;
         try (final FileOutputStream os = new FileOutputStream(new File(destinyPath))
         		){
