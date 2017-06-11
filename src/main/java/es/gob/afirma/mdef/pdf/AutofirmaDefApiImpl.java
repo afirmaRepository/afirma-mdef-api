@@ -292,7 +292,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
         try {
 			new XMLLookUnmarsall(xmlLook, field, p, pke).parse();
 		} catch (es.gob.afirma.mdef.pdf.XMLException e1) {
-			// TODO Auto-generated catch block
+        	LOGGER.severe("No se han recuperado los valores del xml: " + e1); //$NON-NLS-1$
 			e1.printStackTrace();
 		}
         p.putAll(prefProps);
