@@ -79,8 +79,6 @@ public interface AutofirmaDefApi {
 	 *            Identificador de pol&iacute;ticas.
 	 * @param fieldName
 	 *            Nombre del campo.
-	 * @param tsaName
-	 *            Nombre tsa.
 	 * @param xmlLook
 	 *            Apariencia del XML.
 	 * @throws PdfException
