@@ -42,6 +42,7 @@ import com.aowagie.text.pdf.PdfString;
 import es.gob.afirma.cert.signvalidation.SignValiderFactory;
 import es.gob.afirma.cert.signvalidation.SignValidity.SIGN_DETAIL_TYPE;
 import es.gob.afirma.core.AOCancelledOperationException;
+import es.gob.afirma.core.AOException;
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.core.signers.AOSignConstants;
@@ -74,11 +75,11 @@ import nu.xom.XMLException;
 @Service
 public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 
-	private static final String SEPARATOR = ","; //$NON-NLS-1$
-	private static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); //$NON-NLS-1$
+	private static final String SEPARATOR = ","; 
+	private static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); 
 
 	//@Override
-	public String enumSignatureFieldNamesOld(String filePath) {
+	public String enumSignatureFieldNamesOld(String filePath) throws PdfException {
 		final StringBuilder sb = new StringBuilder();
 		try (final InputStream fis = new FileInputStream(new File(filePath))) {
 			final byte[] data = AOUtil.getDataFromInputStream(fis);
@@ -92,15 +93,14 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			}
 			return sb.toString();
 		} catch (final Exception e) {
-			LOGGER.severe("Error recuperando los nombres de campos de firma del PDF: " + e); //$NON-NLS-1$
-			// throw new PdfException("Error recuperando los nombres de campos
-			// de firma del pdf: " + e, e); //$NON-NLS-1$
+			LOGGER.severe("Error recuperando los nombres de campos de firma del PDF: " + e); 
+			throw new PdfException("Error recuperando los nombres de campos de firma del pdf: " + e, e); 			
 		}
-		return null;
+		
 	}
 
 	@Override
-	public String camposFirmaPDF(String filePath) {
+	public String camposFirmaPDF(String filePath) throws PdfException {
 		final StringBuilder sb = new StringBuilder();
 		try (final InputStream fis = new FileInputStream(new File(filePath))) {
 			final byte[] data = AOUtil.getDataFromInputStream(fis);
@@ -123,29 +123,26 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			
 			return sb.toString();
 		} catch (final Exception e) {
-			LOGGER.severe("Error recuperando los nombres de campos de firma del PDF: " + e); //$NON-NLS-1$
-			// throw new PdfException("Error recuperando los nombres de campos
-			// de firma del pdf: " + e, e); //$NON-NLS-1$
+			LOGGER.severe("Error recuperando los nombres de campos de firma del PDF: " + e); 
+			throw new PdfException("Error recuperando los nombres de campos de firma del pdf: " + e, e); 
 		}
-		return null;
 	}
 	
 	@Override
-	public int numeroPaginasPDF(String filePath) {
+	public int numeroPaginasPDF(String filePath) throws PdfException {
 		PdfReader pdfReader = null;
 		try {
 			pdfReader = new PdfReader(filePath);
 		} catch (IOException e) {
-			LOGGER.severe("Error anadiendo pagina en blanco al PDF: " + e); //$NON-NLS-1$
-			// throw new PdfException("Error obteniendo el n&uacute;mero de
-			// p&aacute;ginas del documento PDF: " + e, e); //$NON-NLS-1$
+			LOGGER.severe("Error anadiendo pagina en blanco al PDF: " + e); 
+			 throw new PdfException("Error obteniendo el n&uacute;mero de p&aacute;ginas del documento PDF: " + e, e); 
 		}
 		return pdfReader.getNumberOfPages();
 	}
 
 	
 	@Override
-	public void anadirPaginaBlancaPDF(String filePath) {
+	public void anadirPaginaBlancaPDF(String filePath) throws PdfException {
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			final PdfReader pdfReader = new PdfReader(filePath);
 			final Calendar cal = Calendar.getInstance();
@@ -158,9 +155,8 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			os.write(baos.toByteArray());
 			os.close();
 		} catch (final Exception e) {
-			LOGGER.severe("Error anadiendo pagina en blanco al PDF: " + e); //$NON-NLS-1$
-			// throw new PdfException("Error a&ntilde;adiendo pagina en blanco
-			// al documento PDF: " + e, e); //$NON-NLS-1$
+			LOGGER.severe("Error anadiendo pagina en blanco al PDF: " + e); 
+			throw new PdfException("Error a&ntilde;adiendo pagina en blanco  al documento PDF: " + e, e); 
 		}
 
 	}
@@ -178,7 +174,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			fis.read(xmlBytes);  
 			if (xmlBytes.length < 1) {
 				throw new IllegalArgumentException(
-					"El XML de definicion de lote de firmas no puede ser nulo ni vacio" //$NON-NLS-1$
+					"El XML de definicion de lote de firmas no puede ser nulo ni vacio" 
 				);
 			}
 			
@@ -195,8 +191,8 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			 
 			 if(AOUIFactory.showConfirmDialog(
      				null,
-     				SimpleAfirmaMessages.getString("Api.1"), //$NON-NLS-1$
-     				SimpleAfirmaMessages.getString("Api.0"), //$NON-NLS-1$
+     				SimpleAfirmaMessages.getString("Api.1"), 
+     				SimpleAfirmaMessages.getString("Api.0"), 
      				JOptionPane.YES_NO_OPTION,
      				JOptionPane.WARNING_MESSAGE
      			) == 0) {
@@ -210,27 +206,27 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 						pke.getPrivateKey()
 					);
 			 }
-/*		} catch (CertificateEncodingException | AOException e) {
-			LOGGER.severe("Error durante la firma por lotes: " + e); //$NON-NLS-1$
+		} catch (CertificateEncodingException | AOException e) {
+			LOGGER.severe("Error durante la firma por lotes: " + e); 
 			throw e;
-*/		}
+		}
 		catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-			LOGGER.severe("No se ha encontrado el alias en el almacen: " + e); //$NON-NLS-1$
+			LOGGER.severe("No se ha encontrado el alias en el almacen: " + e); 
 			throw e;
 		}
 		catch (AOKeystoreAlternativeException e) {
-			LOGGER.severe("No de ha podido inicializar el almacen de windows: " + e); //$NON-NLS-1$
+			LOGGER.severe("No de ha podido inicializar el almacen de windows: " + e); 
 			throw e;
 		}
-		//throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); //$NON-NLS-1$
+		//throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); 
 	
 		return null;	
 	}
 
 	@Override
 	public void firmaFinal(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
-			String tsaName, String xmlLook) throws XMLException, AOCertificatesNotFoundException,
-			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException {
+			String xmlLook) throws XMLException, AOCertificatesNotFoundException,
+			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
 		final AOSigner signer = AOSignerFactory.getSigner(AOSignConstants.SIGN_FORMAT_PADES);
 
 		byte[] data = null;
@@ -238,8 +234,8 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
         	data = AOUtil.getDataFromInputStream(fis);
 		}
 		catch (final Exception e) {
-			LOGGER.severe("Error leyendo fichero de entrada: " + e); //$NON-NLS-1$
-			//throw new PdfException("Error leyendo fichero de entrada: " + e, e); //$NON-NLS-1$
+			LOGGER.severe("Error leyendo fichero de entrada: " + e); 
+			throw new PdfException("Error leyendo fichero de entrada: " + e, e); 
 		}
 		SignatureField field = null;
 		if (fieldName != null && !fieldName.isEmpty()) {
@@ -256,14 +252,10 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 		PolicyIdFilter policyFilter = null;
 		if (policyIdentifier != null && !policyIdentifier.isEmpty()) {
 			policyFilter = new PolicyIdFilter(policyIdentifier);
-			p.setProperty("policyIdentifier", policyIdentifier); //$NON-NLS-1$
+			p.setProperty("policyIdentifier", policyIdentifier); 
 		}
         final Properties prefProps = ExtraParamsHelper.loadPAdESExtraParams();
 		
-		if (tsaName != null && !tsaName.isEmpty()) {
-			p.setProperty("tsaPolicy", tsaName); //$NON-NLS-1$
-		}
-
 		ArrayList<CertificateFilter> filters = null;
 		if (policyFilter != null) {
 			filters = new ArrayList<>();
@@ -277,22 +269,22 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
         	throw e; 
         }
         catch(final AOCertificatesNotFoundException e) {
-        	LOGGER.severe("El almacen no contiene ningun certificado que se pueda usar para firmar: " + e); //$NON-NLS-1$
+        	LOGGER.severe("El almacen no contiene ningun certificado que se pueda usar para firmar: " + e); 
         	throw e;
         }
         catch (final Exception e) {
-        	LOGGER.severe("Ocurrio un error al extraer la clave privada del certificiado seleccionado: " + e); //$NON-NLS-1$
-        	//throw new PdfException("Ocurrio un error al extraer la clave privada del certificiado seleccionado: " + e, e); //$NON-NLS-1$
+        	LOGGER.severe("Ocurrio un error al extraer la clave privada del certificiado seleccionado: " + e); 
+        	throw new PdfException("Ocurrio un error al extraer la clave privada del certificiado seleccionado: " + e, e); 
     	}
 
         final String signatureAlgorithm = PreferencesManager.get(
-    		PreferencesManager.PREFERENCE_GENERAL_SIGNATURE_ALGORITHM, "SHA512withRSA" //$NON-NLS-1$
+    		PreferencesManager.PREFERENCE_GENERAL_SIGNATURE_ALGORITHM, "SHA512withRSA" 
 		);
 
         try {
 			new XMLLookUnmarsall(xmlLook, field, p, pke).parse();
 		} catch (es.gob.afirma.mdef.pdf.XMLException e1) {
-        	LOGGER.severe("No se han recuperado los valores del xml: " + e1); //$NON-NLS-1$
+        	LOGGER.severe("No se han recuperado los valores del xml: " + e1); 
 			e1.printStackTrace();
 		}
         p.putAll(prefProps);
@@ -310,33 +302,33 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
         	os.close();
         }
         catch(final AOCancelledOperationException e) {
-        	throw new AOCancelledOperationException("Cancelado por el usuario: " + e, e); //$NON-NLS-1$
+        	throw new AOCancelledOperationException("Cancelado por el usuario: " + e, e); 
         }
         catch(final PdfIsCertifiedException e) {
-        	LOGGER.severe("PDF no firmado por estar certificado: " + e); //$NON-NLS-1$
+        	LOGGER.severe("PDF no firmado por estar certificado: " + e); 
         	throw e;
         }
         catch(final BadPdfPasswordException e) {
-        	LOGGER.severe("PDF protegido con contrasena mal proporcionada: " + e); //$NON-NLS-1$
+        	LOGGER.severe("PDF protegido con contrasena mal proporcionada: " + e); 
         	throw e;
         }
         catch(final PdfHasUnregisteredSignaturesException e) {
-        	LOGGER.severe("PDF con firmas no registradas: " + e); //$NON-NLS-1$
+        	LOGGER.severe("PDF con firmas no registradas: " + e); 
         	throw e;
         }
         catch(final OutOfMemoryError ooe) {
-            LOGGER.severe("Falta de memoria en el proceso de firma: " + ooe); //$NON-NLS-1$
-            throw new OutOfMemoryError("Falta de memoria en el proceso de firma: " + ooe); //$NON-NLS-1$
+            LOGGER.severe("Falta de memoria en el proceso de firma: " + ooe); 
+            throw new OutOfMemoryError("Falta de memoria en el proceso de firma: " + ooe); 
         }
         catch(final Exception e) {
-            LOGGER.severe("Error durante el proceso de firma: " + e); //$NON-NLS-1$
-            //throw new PdfException("Error durante el proceso de firma: " + e, e); //$NON-NLS-1$
+            LOGGER.severe("Error durante el proceso de firma: " + e); 
+            throw new PdfException("Error durante el proceso de firma: " + e, e); 
         }
 
 	}
 
 	@Override
-	public boolean verificarFirmasPDF(String filePath) {
+	public boolean verificarFirmasPDF(String filePath) throws PdfException {
 		byte[] sign = null;
 		try ( final FileInputStream fis = new FileInputStream(new File(filePath)) ) {
 			sign = AOUtil.getDataFromInputStream(fis);
@@ -349,10 +341,9 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			return SignValiderFactory.getSignValider(sign).validate(sign).getValidity().equals(SIGN_DETAIL_TYPE.OK);
 		}
 		catch(final Exception e) {
-			LOGGER.severe("Error validando la firma del PDF: " + e); //$NON-NLS-1$
-			//throw new PdfException("Error validando la firma del PDF: " + e, e); //$NON-NLS-1$
+			LOGGER.severe("Error validando la firma del PDF: " + e); 
+			throw new PdfException("Error validando la firma del PDF: " + e, e); 
 		}
-		return false;
 	}
 
 	@Override
@@ -379,21 +370,21 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 	@Override
 	public void anadirCampoFirma(String filePath, int page, int leftX, int leftY, int rightX, int rightY)
 			throws DocumentException, IOException {
-		int pageNbr = numeroPaginasPDF(filePath);
-		if(page > pageNbr || page < pageNbr*-1) {
-			throw new IllegalArgumentException("El numero de pagina no puede ser superior al numero total"); //$NON-NLS-1$
-		}
-		final PdfReader reader = new PdfReader(filePath);
 		try (
 				//FileOutputStream fos = new FileOutputStream(filePath)
 				FileOutputStream fos = new FileOutputStream(createNameNewFile(filePath, "New"))
 				) {
+		int pageNbr = numeroPaginasPDF(filePath);
+		if(page > pageNbr || page < pageNbr*-1) {
+			throw new IllegalArgumentException("El numero de pagina no puede ser superior al numero total"); 
+		}
+		final PdfReader reader = new PdfReader(filePath);
 			PdfStamper stamper = new PdfStamper(reader, fos, new GregorianCalendar());
 			PdfFormField sig = PdfFormField.createSignature(stamper.getWriter()); 
 			sig.setWidget(new Rectangle(leftX, leftY, rightX, rightY), null); 
 			sig.setFlags(PdfAnnotation.FLAGS_PRINT); 
-			sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));  //$NON-NLS-1$
-			sig.setFieldName("SIGNATURE");  //$NON-NLS-1$
+			sig.put(PdfName.DA, new PdfString("/Helv 0 Tf 0 g"));  
+			sig.setFieldName("SIGNATURE");  
 			int finalPage;
 			if(page > 0) {
 				finalPage = page;
@@ -414,7 +405,10 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			throw new IOException("El fichero " + filePath + " no existe: " + e); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IOException("El fichero " + filePath + " no existe: " + e);  //$NON-NLS-2$
+		} catch (PdfException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -444,22 +438,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 		}
 		
 		if(null!= dest){
-			org.spongycastle.asn1.x500.X500Name x500name;
-			try {
-				x500name = new JcaX509CertificateHolder(dest).getSubject();
-			RDN cn2 = x500name.getRDNs(BCStyle.CN)[0];
-			cnTarjeta = IETFUtils.valueToString(cn2.getFirst().getValue());
-			AOUIFactory.showMessageDialog(
-					null,
-					cnTarjeta, //$NON-NLS-1$
-					"CN de la tarjeta seleccionada", //$NON-NLS-1$
-					AOUIFactory.INFORMATION_MESSAGE
-				);
-			} catch (CertificateEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			cnTarjeta = AOUtil.getCN(dest);
 		}
 		return cnTarjeta;
 	}

@@ -143,7 +143,7 @@ public class AutofirmaDefApiTest {
 		define la apariencia de firma; y devolverá una codificación de resultado.
      */
     public void testPdfSign() throws Exception{
-    	autofirmaDefApi.firmaFinal(PDF_FILE, SING_PDF_FILE_NEW, null, null, null, XMLLOOKSIMENDEF);
+    	autofirmaDefApi.firmaFinal(PDF_FILE, SING_PDF_FILE_NEW, null, null, XMLLOOKSIMENDEF);
     	assertTrue(autofirmaDefApi.verificarFirmasPDF(SING_PDF_FILE_NEW));
     }	
     

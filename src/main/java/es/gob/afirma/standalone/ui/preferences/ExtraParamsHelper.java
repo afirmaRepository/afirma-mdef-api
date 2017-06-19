@@ -1,25 +1,36 @@
 package es.gob.afirma.standalone.ui.preferences;
 
+import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 
 
 public final class ExtraParamsHelper {
 
+	protected static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); //$NON-NLS-1$
 
 	/** Obtiene la configuraci&oacute;n para las firmas PAdES.
 	 * @return Propiedades para la configuraci&oacute;n de las firmas PAdES. */
 	public static Properties loadPAdESExtraParams() {
 
 		final Properties p = new Properties();
+		final Properties conf = new Properties();
 
+		try {
+			conf.load( ExtraParamsHelper.class.getResourceAsStream("/config.properties"));
+		} catch (IOException e) {
+			LOGGER.warning("No se han podido incoroprar los datos de configuración"); //$NON-NLS-1$
+		}
 
+		
         if(PreferencesManager.getBoolean(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_CONFIGURE, true)){
             /** URL de la autoridad sello de tiempo (si no se indica no se a&ntilde;ade sello de tiempo). */
             if (!PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_TSA_URL, "").trim().isEmpty()) {  //$NON-NLS-1$
             	p.put(
         			"tsaURL", //$NON-NLS-1$
-        			PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_TSA_URL, "") //$NON-NLS-1$
+        			//PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_TSA_URL, "") //$NON-NLS-1$
+        			PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_TSA_URL, conf.getProperty("propTsaUrl"))
     			);
             }
             
@@ -40,7 +51,9 @@ public final class ExtraParamsHelper {
             if (!PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_STAMP_POLICY, "").trim().isEmpty()) {  //$NON-NLS-1$
             	p.put(
         			"tsaPolicy", //$NON-NLS-1$
-        			PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_STAMP_POLICY, "") //$NON-NLS-1$
+        			//PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_STAMP_POLICY, "") //$NON-NLS-1$
+        			PreferencesManager.get(PreferencesManager.PREFERENCE_PADES_TIMESTAMP_STAMP_POLICY, conf.getProperty("propPolicyPades"))
+
     			);
             }
             

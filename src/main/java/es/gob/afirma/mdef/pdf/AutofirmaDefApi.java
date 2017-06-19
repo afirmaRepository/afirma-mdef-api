@@ -29,8 +29,7 @@ public interface AutofirmaDefApi {
 	 * @throws PdfException
 	 *             Error al gestionar el documento pdf.
 	 */
-	public String camposFirmaPDF(final String filePath);// throws
-																	// PdfException;
+	public String camposFirmaPDF(final String filePath) throws PdfException;
 
 	/**
 	 * Obtiene el n&uacute;mero de p&aacute;ginas del documento pdf.
@@ -41,7 +40,7 @@ public interface AutofirmaDefApi {
 	 * @throws PdfException
 	 *             Error al gestionar el documento pdf.
 	 */
-	public int numeroPaginasPDF(final String filePath);// throws PdfException;
+	public int numeroPaginasPDF(final String filePath) throws PdfException;
 
 	/**
 	 * Agrega una p&aacute;gina en blanco al final del documento pdf.
@@ -51,7 +50,7 @@ public interface AutofirmaDefApi {
 	 * @throws PdfException
 	 *             Error al gestionar el fichero pdf.
 	 */
-	public void anadirPaginaBlancaPDF (final String filePath);// throws PdfException;
+	public void anadirPaginaBlancaPDF (final String filePath) throws PdfException;
 
 	/**
 	 * Realiza la firma en lotes sobre los documentos definidos en un fichero
@@ -98,7 +97,7 @@ public interface AutofirmaDefApi {
 	 *             Firma del pdf no registrada.
 	 */
 	public void firmaFinal(final String originalPath, final String destinyPath, final String policyIdentifier,
-			final String fieldName, final String tsaName, final String xmlLook) throws // PdfException,
+			final String fieldName, final String xmlLook) throws PdfException,
 	XMLException, AOCertificatesNotFoundException, BadPdfPasswordException, PdfIsCertifiedException,
 			PdfHasUnregisteredSignaturesException;
 
@@ -111,8 +110,7 @@ public interface AutofirmaDefApi {
 	 * @throws PdfException
 	 *             Error en la apertura o en el acceso al fichero.
 	 */
-	public boolean verificarFirmasPDF(final String filePath);// throws
-															// PdfException;
+	public boolean verificarFirmasPDF(final String filePath) throws PdfException;
 
 	/**
 	 * Obtiene la clave privada tras aplicar los filtros.
@@ -187,7 +185,6 @@ public interface AutofirmaDefApi {
 	 */
 	public String cnTarjeta (final List<? extends CertificateFilter> filters) 
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
-			KeyStoreException, NoSuchAlgorithmException;// throws
-															// PdfException;
+			KeyStoreException, NoSuchAlgorithmException, PdfException;
 
 }
