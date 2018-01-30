@@ -58,12 +58,12 @@ public class AutofirmaDefApiTest {
     	deleteFileForTest(dest);    	
     }
     
-    //@Test
+    @Test
     public void shouldBeInjected() throws Exception {
         assertNotNull(autofirmaDefApi);
     }    
     
-    //@Test
+    @Test
     //OK
     /*
      i.	Añadir página: Incorporación de una página en blanco al final de un documento PDF.
@@ -77,7 +77,7 @@ public class AutofirmaDefApiTest {
         assertEquals(numPageBefore+1,numPageAfter);
     }    
 
-    //@Test   
+    @Test   
     //OK
     /*
     ii.	Contar campos de firma: Obtención del número de campos de firma (vacíos o no) de un documento PDF. 
@@ -88,7 +88,7 @@ public class AutofirmaDefApiTest {
     	assertEquals("Signature1"	,autofirmaDefApi.camposFirmaPDF(SING_PDF_FILE));
 	}
     
-    //@Test
+    @Test
 	//OK
 	/*
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
@@ -99,7 +99,7 @@ public class AutofirmaDefApiTest {
     }    
    
     
-    //@Test
+    @Test
     //OK
 	/*
 	 * iv.	Añadir campo de firma: Añadir un campo de firma vacío en cualquier página de un documento PDF, 
@@ -110,7 +110,7 @@ public class AutofirmaDefApiTest {
     	assertEquals("SIGNATURE",autofirmaDefApi.camposFirmaPDF(PDF_FILE_TEST));
     }   																	// PdfException;
     
-    //@Test
+    @Test
     //funciona
     /*
      * v.	El interfaz de programación permitirá seleccionar el certificado de firma por su identificador
@@ -120,6 +120,16 @@ public class AutofirmaDefApiTest {
     	PrivateKeyEntry pke = autofirmaDefApi.recuperaClavePrivada(getCertFilters());
     	assertNotNull(pke);
     }
+
+    @Test
+    //OK (se selecciona para la prueba la tarjeta PKI10)
+    /*
+     * vi.	Deberá proporcionar la funcionalidad para obtener el CN del certificado cargado 
+     * de una tarjeta (almacén de certificados).
+     */
+	public void testGetCNCertTEMD() throws Exception{
+		assertEquals("USUARIO PRUEBA PKI19 |X00000049", autofirmaDefApi.cnTarjeta(getCertFilters()));
+	}
 
     //@Test
     //OK (se selecciona para la prueba la tarjeta PKI10)

@@ -6,7 +6,7 @@
 	<groupId>es.gob.afirma</groupId>
 	<artifactId>afirma-mdef-api</artifactId>
 	<name>afirma-mdef-api</name>
-	<version>3.3.2-SNAPSHOT</version>
+	<version>1.6</version>
 
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
@@ -22,12 +22,12 @@
 
 		<dependency>
 			<groupId>es.gob.afirma</groupId>
-			<artifactId>afirma-ui-simpleafirma</artifactId>
-			<version>${project.version}</version>
+			<artifactId>mdef-afirma-ui-simpleafirma</artifactId>
+			<version>1.5-DEFENSA</version>
 		</dependency>		
 		<dependency>
 			<groupId>es.gob.afirma.local</groupId>
-			<artifactId>afirma-local-batch-sign</artifactId>
+			<artifactId>mdef-afirma-local-batch-sign</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
