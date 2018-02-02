@@ -10,23 +10,17 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.swing.JOptionPane;
+import javax.security.auth.callback.PasswordCallback;
 
-import org.spongycastle.asn1.x500.RDN;
-import org.spongycastle.asn1.x500.style.BCStyle;
-import org.spongycastle.asn1.x500.style.IETFUtils;
-import org.spongycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.springframework.stereotype.Service;
 
 import com.aowagie.text.DocumentException;
@@ -42,13 +36,10 @@ import com.aowagie.text.pdf.PdfString;
 import es.gob.afirma.cert.signvalidation.SignValiderFactory;
 import es.gob.afirma.cert.signvalidation.SignValidity.SIGN_DETAIL_TYPE;
 import es.gob.afirma.core.AOCancelledOperationException;
-import es.gob.afirma.core.AOException;
 import es.gob.afirma.core.misc.AOUtil;
-import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.AOSignerFactory;
-import es.gob.afirma.core.ui.AOUIFactory;
 import es.gob.afirma.keystores.AOCertificatesNotFoundException;
 import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreDialog;
@@ -56,16 +47,14 @@ import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerException;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.AOKeystoreAlternativeException;
-import es.gob.afirma.keystores.AggregatedKeyStoreManager;
 import es.gob.afirma.keystores.filters.CertificateFilter;
 import es.gob.afirma.keystores.filters.PolicyIdFilter;
-import es.gob.afirma.local.BatchSigner;
+import es.gob.afirma.keystores.filters.rfc.KeyUsageFilter;
 import es.gob.afirma.signers.pades.BadPdfPasswordException;
 import es.gob.afirma.signers.pades.PdfHasUnregisteredSignaturesException;
 import es.gob.afirma.signers.pades.PdfIsCertifiedException;
 import es.gob.afirma.signers.pades.PdfUtil;
 import es.gob.afirma.signers.pades.PdfUtil.SignatureField;
-import es.gob.afirma.standalone.SimpleAfirmaMessages;
 import es.gob.afirma.standalone.SimpleKeyStoreManager;
 import es.gob.afirma.standalone.ui.preferences.ExtraParamsHelper;
 import es.gob.afirma.standalone.ui.preferences.PreferencesManager;
@@ -161,71 +150,104 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 
 	}
 
-	@Override
-	public String firmaBatch(String xmlPath, String alias, String password) throws Exception{
-		// Conversion del fichero XML a bytes
-		byte [] xmlBytes = null;
-		File f = new File(xmlPath);
-		xmlBytes = new byte[(int)f.length()]; 
-		try (
-				final FileInputStream fis = new FileInputStream(f); 
-				){
-			
-			fis.read(xmlBytes);  
-			if (xmlBytes.length < 1) {
-				throw new IllegalArgumentException(
-					"El XML de definicion de lote de firmas no puede ser nulo ni vacio" 
-				);
-			}
-			
-			AggregatedKeyStoreManager aksm;
-		
-			//Se obtiene el almacen de Windows (posibilidad de inicializar otro almacen)
-			 aksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
-					 AOKeyStore.WINDOWS, 
-					 null, 
-					 null, 
-					 null, 
-					 null
-					);
-			 
-			 if(AOUIFactory.showConfirmDialog(
-     				null,
-     				SimpleAfirmaMessages.getString("Api.1"), 
-     				SimpleAfirmaMessages.getString("Api.0"), 
-     				JOptionPane.YES_NO_OPTION,
-     				JOptionPane.WARNING_MESSAGE
-     			) == 0) {
-				 //Se obtiene la clave privada del almacen
-				 PrivateKeyEntry pke = aksm.getKeyEntry(alias);
-			 
-				 //Se firma con la clave privada
-				 return BatchSigner.sign(
-						Base64.encode(xmlBytes), 
-						pke.getCertificateChain(), 
-						pke.getPrivateKey()
-					);
-			 }
-		} catch (CertificateEncodingException | AOException e) {
-			LOGGER.severe("Error durante la firma por lotes: " + e); 
-			throw e;
-		}
-		catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-			LOGGER.severe("No se ha encontrado el alias en el almacen: " + e); 
-			throw e;
-		}
-		catch (AOKeystoreAlternativeException e) {
-			LOGGER.severe("No de ha podido inicializar el almacen de windows: " + e); 
-			throw e;
-		}
-		//throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); 
-	
-		return null;	
-	}
+//	@Override
+//	public String firmaBatch(String xmlPath, String alias, String password) throws Exception{
+//		// Conversion del fichero XML a bytes
+//		byte [] xmlBytes = null;
+//		File f = new File(xmlPath);
+//		xmlBytes = new byte[(int)f.length()]; 
+//		try (
+//				final FileInputStream fis = new FileInputStream(f); 
+//				){
+//			
+//			fis.read(xmlBytes);  
+//			if (xmlBytes.length < 1) {
+//				throw new IllegalArgumentException(
+//					"El XML de definicion de lote de firmas no puede ser nulo ni vacio" 
+//				);
+//			}
+//			
+//			AggregatedKeyStoreManager aksm;
+//		
+//			//Se obtiene el almacen de Windows (posibilidad de inicializar otro almacen)
+//			 aksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
+//					 //AOKeyStore.WINDOWS,
+//					 AOKeyStore.TEMD,
+//					 null, 
+//					 null, 
+//					 null, 
+//					 null
+//					);
+//			 
+//			 if(AOUIFactory.showConfirmDialog(
+//     				null,
+//     				SimpleAfirmaMessages.getString("Api.1"), 
+//     				SimpleAfirmaMessages.getString("Api.0"), 
+//     				JOptionPane.YES_NO_OPTION,
+//     				JOptionPane.WARNING_MESSAGE
+//     			) == 0) {
+//				 //Se obtiene la clave privada del almacen
+//				 PrivateKeyEntry pke = aksm.getKeyEntry(alias);
+//			 
+//				 //Se firma con la clave privada
+//				 return BatchSigner.sign(
+//						Base64.encode(xmlBytes), 
+//						pke.getCertificateChain(), 
+//						pke.getPrivateKey()
+//					);
+//			 }
+//		} catch (CertificateEncodingException | AOException e) {
+//			LOGGER.severe("Error durante la firma por lotes: " + e); 
+//			throw e;
+//		}
+//		catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
+//			LOGGER.severe("No se ha encontrado el alias en el almacen: " + e); 
+//			throw e;
+//		}
+//		catch (AOKeystoreAlternativeException e) {
+//			LOGGER.severe("No de ha podido inicializar el almacen de windows: " + e); 
+//			throw e;
+//		}
+//		//throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); 
+//	
+//		return null;	
+//	}
 
+	
+	@Override
+	public String firmaBatch(String originalPath, String destinyPath, 
+			String xmlLook,String alias, String password, boolean solicitud) throws XMLException, AOCertificatesNotFoundException,
+			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
+		File folder = new File(originalPath);
+		File folderDestiny = new File(destinyPath);
+		File[] listOfFiles = folder.listFiles();
+		int numeroDocumentos = 0;
+
+		    for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()) {
+		    	  String texto = listOfFiles[i].getName();
+		        String origen = folder.getAbsolutePath().concat("\\").concat(listOfFiles[i].getName());
+		        String salida = folderDestiny.getAbsolutePath().concat("\\").concat(
+		        		(texto.substring(0,texto.lastIndexOf(".")+1).concat("signed.").concat(texto.substring(texto.lastIndexOf(".")+1))));
+		        
+		        firmaConSinSolicitud(origen,salida,null, null, xmlLook, solicitud, alias, password);
+		        numeroDocumentos = i;
+		      } else if (listOfFiles[i].isDirectory()) {
+		      }
+		    }	
+		return "el numero de documentos firmados es : "+ ((numeroDocumentos > 1)?numeroDocumentos+1:0);	
+	}
+	
 	@Override
 	public void firmaFinal(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
 			String xmlLook) throws XMLException, AOCertificatesNotFoundException,
+			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
+
+		firmaConSinSolicitud(originalPath,destinyPath,policyIdentifier, fieldName, xmlLook, false, null, null);
+	}
+
+	private void firmaConSinSolicitud(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
+			String xmlLook, boolean solicitud, String alias, String password) throws XMLException, AOCertificatesNotFoundException,
 			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
 		final AOSigner signer = AOSignerFactory.getSigner(AOSignConstants.SIGN_FORMAT_PADES);
 
@@ -257,13 +279,20 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
         final Properties prefProps = ExtraParamsHelper.loadPAdESExtraParams();
 		
 		ArrayList<CertificateFilter> filters = null;
+		filters = new ArrayList<>();
 		if (policyFilter != null) {
-			filters = new ArrayList<>();
 			filters.add(policyFilter);
 		}
+		filters.add(new KeyUsageFilter(KeyUsageFilter.SIGN_CERT_USAGE));
 		PrivateKeyEntry pke = null;
         try {
-            pke = recuperaClavePrivada(filters);
+        	if(alias.isEmpty() && password.isEmpty()){
+        		pke = recuperaClavePrivada(filters);
+        	}else{
+        		pke = recuperaClavePrivada(filters,
+        			alias, 
+        			password,solicitud);        		
+        	}
         }
         catch (final AOCancelledOperationException e) {
         	throw e; 
@@ -367,6 +396,30 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 		);
 	}
 
+	
+	public PrivateKeyEntry recuperaClavePrivada(List<? extends CertificateFilter> filters, String alias,String password, boolean solicitud) 
+			throws AOKeyStoreManagerException, AOKeystoreAlternativeException, IOException, 
+			KeyStoreException, NoSuchAlgorithmException, UnrecoverableEntryException {
+        final PasswordCallback pc = new PasswordCallback(">", false); 
+        pc.setPassword(password.toCharArray());
+		final AOKeyStore ks = AOKeyStore.TEMD;
+		ks.getStorePasswordCallback(pc);
+		AOKeyStoreManager senderKeyStoreManager =  AOKeyStoreManagerFactory.getAOKeyStoreManager(
+				ks,
+				null,
+				null,
+				//ks.getStorePasswordCallback(null),
+				pc,
+				null);
+
+		if(!solicitud){
+			senderKeyStoreManager.getType().getCertificatePasswordCallback(null).getPassword();
+
+		}
+		return senderKeyStoreManager.getKeyEntry(alias);
+		
+	}
+	
 	@Override
 	public void anadirCampoFirma(String filePath, int page, int leftX, int leftY, int rightX, int rightY)
 			throws DocumentException, IOException {

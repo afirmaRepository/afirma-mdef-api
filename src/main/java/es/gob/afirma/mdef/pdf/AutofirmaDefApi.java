@@ -56,17 +56,36 @@ public interface AutofirmaDefApi {
 	 * Realiza la firma en lotes sobre los documentos definidos en un fichero
 	 * XML.
 	 * 
-	 * @param xmlPath
-	 *            Ruta del fichero XML.
+	 * @param originalPath
+	 *            Ruta de origen.
+	 * @param destinyPath
+	 *            Ruta de destino.
+	 * @param xmlLook
+	 *            Apariencia del XML.
 	 * @param alias
 	 *            Alias del certificado a usar en la firma.
 	 * @param password
 	 *            Password para obtener la clave privada de firma.
+	 * @param solicitud
+	 *            Solicitar el password por cada documento.
 	 * @return Registro del resultado general del proceso por lote en un XML
-	 * @throws Exception
-	 *             Error en la firma por lotes
+	 * @throws PdfException
+	 *             Error en la lectua del pdf.
+	 * @throws XMLException
+	 *             Errir en la lectura del XML.
+	 * @throws AOCertificatesNotFoundException
+	 *             No se han encontrado certficados.
+	 * @throws BadPdfPasswordException
+	 *             Password incorrecta.
+	 * @throws PdfIsCertifiedException
+	 *             Pdf no certificado.
+	 * @throws PdfHasUnregisteredSignaturesException
+	 *             Firma del pdf no registrada.
 	 */
-	public String firmaBatch(final String xmlPath, String alias, String password) throws Exception;
+	public String firmaBatch(final String originalPath, final String destinyPath, final String xmlLook,
+			final String alias, final String password, final boolean solicitud) throws PdfException,
+	XMLException, AOCertificatesNotFoundException, BadPdfPasswordException, PdfIsCertifiedException,
+			PdfHasUnregisteredSignaturesException;
 
 	/**
 	 * Firma del fichero pdf.
@@ -154,10 +173,6 @@ public interface AutofirmaDefApi {
 	 *             Error al abrir el documento.
 	 * @throws IOException
 	 *             Error al encontrar el fichero.
-	 * @throws PdfException
-	 *             Error al obtener el n&uacute;mero de p&aacute;ginas.
-	 * @throws IllegalArgumentException
-	 *             N&uacute;mero de p&aacute;gina fuera de los l&iacute;mites.
 	 */
 	public void anadirCampoFirma(final String filePath, final int page, final int leftX, final int leftY, final int rightX,
 			final int rightY) throws DocumentException, IOException;// ,
@@ -180,6 +195,8 @@ public interface AutofirmaDefApi {
 	 *             Error en la inicializaci&oacute;n del almac&eacute;n.
 	 * @throws NoSuchAlgorithmException
 	 *             No existe el algoritmo.
+	 * @throws PdfException
+	 *             Error al gestionar el documento pdf.
 	 */
 	public String cnTarjeta (final List<? extends CertificateFilter> filters) 
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
