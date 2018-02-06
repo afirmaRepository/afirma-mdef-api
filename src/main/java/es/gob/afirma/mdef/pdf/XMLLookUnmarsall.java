@@ -41,8 +41,8 @@ import es.gob.afirma.mdef.pdf.model.sign.SignatureInfosType.SignatureInfo;
 import es.gob.afirma.mdef.pdf.model.sign.TextItemType;
 import es.gob.afirma.mdef.pdf.model.sign.TextType;
 import es.gob.afirma.signers.pades.PdfUtil.SignatureField;
-import es.gob.afirma.standalone.ui.pdf.ColorResource;
-import es.gob.afirma.standalone.ui.pdf.SignPdfUiPanelPreview;
+import es.gob.afirma.mdef.decorator.pdf.ColorResource;
+import es.gob.afirma.mdef.decorator.pdf.SignPdfUiPanelPreview;
 
 /**
  * Parser del XML.
@@ -51,6 +51,7 @@ import es.gob.afirma.standalone.ui.pdf.SignPdfUiPanelPreview;
  */
 public final class XMLLookUnmarsall {
 
+	private static final String ERROR_IMAGE_JPG = "No ha sido posible pasar la imagen a JPG: ";
 	static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); 
 	private final String xml;
 	private BufferedImage image;
@@ -138,9 +139,6 @@ public final class XMLLookUnmarsall {
 			
 			if(null != afirmaConfig.getAppearance()){
 				final AppearanceType appearance = afirmaConfig.getAppearance();
-//				if(null != appearance.getBackground()){
-//					setBackgroundImage(appearance.getBackground());
-//				}
 				if(null != appearance.getForeground()){
 					setForeground(appearance.getForeground());
 				}
@@ -185,47 +183,6 @@ public final class XMLLookUnmarsall {
 		}
 	}
 	
-//	private void setBackgroundImage(final BackgroundType background) throws DOMException, IOException, XMLException {
-//		if(null != background.getImage()){
-//			ImageType image = background.getImage();
-//			BufferedImage im = null;
-//			int width = 0;
-//			int height = 0;
-//			int posX = 0;
-//			int posY = 0;
-//			ImageEncodingType encodeType = image.getEncodeType();
-//			
-//			if(encodeType.compareTo(encodeType.BASE_64)==0){
-//				im = getImageFromBase64(image.getData().toString());
-//			}
-//			if(encodeType.compareTo(encodeType.URI)==0){
-//				try {
-//					im = ImageIO.read(new File(image.getData().toString()));
-//				} catch (final Exception e) {
-//					LOGGER.severe("Error extrayendo propiedades del fondo: " + e); 
-//					throw new XMLException("Error extrayendo propiedades del fondo: " + e, e); 
-//				}
-//			}
-//			if(null != image.getImageSize()){
-//				if(null != image.getImageSize().getHeight() && null != image.getImageSize().getHeight()){
-//					width = image.getImageSize().getWidth().intValue(); 
-//					height = image.getImageSize().getHeight().intValue(); 
-//				}
-//			}
-//			if(null != image.getPosition()){
-//				if(null != image.getPosition().getX() && null != image.getPosition().getY()){
-//					posX = image.getPosition().getX().intValue(); 
-//					posY = image.getPosition().getY().intValue(); 
-//				}
-//			}
-//			if (im != null) {
-//				paintImage(im, width, height, posX, posY);
-//				saveImageProperties();
-//			}
-//			
-//		}
-//	}
-
 	private void setForeground(final ForegroundType foreground) throws DOMException, IOException, XMLException {
 		
 		if(null != foreground.getImage()){
@@ -249,7 +206,7 @@ public final class XMLLookUnmarsall {
 				}
 			}
 			if(null != image.getImageSize()){
-				if(null != image.getImageSize().getHeight() && null != image.getImageSize().getHeight()){
+				if(null != image.getImageSize().getHeight()){
 					width = image.getImageSize().getWidth().intValue(); 
 					height = image.getImageSize().getHeight().intValue(); 
 				}
@@ -461,8 +418,8 @@ public final class XMLLookUnmarsall {
 			ImageIO.write(image, "jpg", osImage); 
 			return Base64.encode(osImage.toByteArray());
 		} catch (final Exception e) {
-			LOGGER.severe("No ha sido posible pasar la imagen a JPG: " + e); 
-			throw new IOException("No ha sido posible pasar la imagen a JPG: " + e, e); 
+			LOGGER.severe(ERROR_IMAGE_JPG + e); 
+			throw new IOException(ERROR_IMAGE_JPG + e, e); 
 		}
 	}
 
@@ -470,8 +427,8 @@ public final class XMLLookUnmarsall {
 		try (final ByteArrayInputStream inImage = new ByteArrayInputStream(Base64.decode(imageB64))) {
 			return ImageIO.read(inImage);
 		} catch (final Exception e) {
-			LOGGER.severe("No ha sido posible pasar la imagen a JPG: " + e); 
-			throw new IOException("No ha sido posible pasar la imagen a JPG: " + e, e); 
+			LOGGER.severe(ERROR_IMAGE_JPG + e); 
+			throw new IOException(ERROR_IMAGE_JPG + e, e); 
 		}
 	}
 }

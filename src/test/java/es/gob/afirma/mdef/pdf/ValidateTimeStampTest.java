@@ -1,14 +1,11 @@
 package es.gob.afirma.mdef.pdf;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 
 import org.junit.Test;
-
-import com.sun.jna.platform.win32.Sspi.TimeStamp;
 
 import es.gob.afirma.mdef.pdf.analyzer.TimestampsAnalyzer;
 

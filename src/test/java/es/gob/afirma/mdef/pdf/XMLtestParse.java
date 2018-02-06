@@ -1,6 +1,7 @@
 package es.gob.afirma.mdef.pdf;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Properties;
 
@@ -8,8 +9,6 @@ import org.junit.Test;
 
 public class XMLtestParse {
 
-    private static final String XMLLOOK = "src/test/resources/XMLLook.xml";
-    private static final String XMLLOOKWHITIMAGE = "src/test/resources/XMLLook.xml";
     private static final String XMLLOOKSIMENDEF = "src/test/resources/configPrueba2.xml";
 	
     //@Test

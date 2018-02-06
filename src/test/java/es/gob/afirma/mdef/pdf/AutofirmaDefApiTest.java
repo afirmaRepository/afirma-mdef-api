@@ -6,10 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyStore.Entry.Attribute;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +34,7 @@ public class AutofirmaDefApiTest {
     private static final String PDF_FILE_TEST = "src/test/resources/Agenda_Codemotion 2016forTest.pdf";
     private static final String SING_PDF_FILE_NEW = "src/test/resources/Agenda Codemotion 2016_new_signed.pdf";
     private static final String SING_PDF_FILE = "src/test/resources/Agenda Codemotion 2016_signed.pdf";
-    private static final String XMLLOOK = "src/test/resources/XMLLook.xml";
     private static final String XMLLOOKSIMENDEF = "src/test/resources/configPrueba2.xml";
-	private static final String PDF_FILES_IN = "src/test/resources/batch/in";
-	private static final String PDF_FILES_OUT = "src/test/resources/batch/out";
 	
     @Autowired
      private AutofirmaDefApi autofirmaDefApi;
@@ -61,12 +55,12 @@ public class AutofirmaDefApiTest {
     	deleteFileForTest(dest);    	
     }
     
-    //@Test
+    @Test
     public void shouldBeInjected() throws Exception {
         assertNotNull(autofirmaDefApi);
     }    
     
-    //@Test
+    @Test
     //OK
     /*
      i.	Añadir página: Incorporación de una página en blanco al final de un documento PDF.
@@ -80,7 +74,7 @@ public class AutofirmaDefApiTest {
         assertEquals(numPageBefore+1,numPageAfter);
     }    
 
-    //@Test   
+    @Test   
     //OK
     /*
     ii.	Contar campos de firma: Obtención del número de campos de firma (vacíos o no) de un documento PDF. 
@@ -91,7 +85,7 @@ public class AutofirmaDefApiTest {
     	assertEquals("Signature1"	,autofirmaDefApi.camposFirmaPDF(SING_PDF_FILE));
 	}
     
-    //@Test
+    @Test
 	//OK
 	/*
 	 * iii.	Contar número de páginas: Obtención del número de páginas de un documento PDF.
@@ -102,7 +96,7 @@ public class AutofirmaDefApiTest {
     }    
    
     
-    //@Test
+    @Test
     //OK
 	/*
 	 * iv.	Añadir campo de firma: Añadir un campo de firma vacío en cualquier página de un documento PDF, 
@@ -113,7 +107,7 @@ public class AutofirmaDefApiTest {
     	assertEquals("SIGNATURE",autofirmaDefApi.camposFirmaPDF(PDF_FILE_TEST));
     }   																	// PdfException;
     
-    //@Test
+    @Test
     //funciona
     /*
      * v.	El interfaz de programación permitirá seleccionar el certificado de firma por su identificador
@@ -124,24 +118,24 @@ public class AutofirmaDefApiTest {
     	assertNotNull(pke);
     }
 
-    //@Test
+    @Test
     //OK (se selecciona para la prueba la tarjeta PKI10)
     /*
      * vi.	Deberá proporcionar la funcionalidad para obtener el CN del certificado cargado 
      * de una tarjeta (almacén de certificados).
      */
 	public void testGetCNCertTEMD() throws Exception{
-		assertEquals("USUARIO PRUEBA PKI19 |X00000049", autofirmaDefApi.cnTarjeta(getCertFilters()));
+		assertEquals("USUARIO PRUEBA PKI17 |X00000047", autofirmaDefApi.cnTarjeta(getCertFilters()));
 	}
 
-    //@Test
+    @Test
     //OK (se selecciona para la prueba la tarjeta PKI10)
     /*
      * vi.	Deberá proporcionar la funcionalidad para obtener el CN del certificado cargado 
      * de una tarjeta (almacén de certificados).
      */
 	public void testGetCNCert() throws Exception{
-		assertEquals("USUARIO PRUEBA PKI19 |X00000049", autofirmaDefApi.cnTarjeta(getCertFilters()));
+		assertEquals("USUARIO PRUEBA PKI17 |X00000047", autofirmaDefApi.cnTarjeta(getCertFilters()));
 	}
 
     //@Test
@@ -160,60 +154,8 @@ public class AutofirmaDefApiTest {
     	assertTrue(autofirmaDefApi.verificarFirmasPDF(SING_PDF_FILE_NEW));
     }	
     
-	
-    //@Test
-    //OK
-    /*
-     * b.	Será posible firmar varios documentos PDF introduciendo sólo una vez el PIN de la tarjeta (Firma Masiva en Lotes de Autorización Única). 
-     * Deberá implementarse un mecanismo por el cual se puedan agrupar las peticiones de firma en un lote, de forma que se procese el lote en el cliente sin necesidad 
-     * de conexiones de red adicionales, invocaciones adicionales y conservando la sesión contra el almacén de claves y certificados. 
-     * El firmante solo tendrá que autorizar una vez el acceso a su clave privada. La seguridad del acceso al almacén de claves debe ser completa, 
-     * y deberá advertirse al usuario de que cuando autoriza al uso lo hace para múltiples ficheros. 
-		i.	Todas las operaciones de firma deben permitir firmar sólo o firmar con sello de tiempo.
-		ii.	Todas las operaciones de firma deben permitir volver a firmar un documento previamente firmado.
-		c.	De igual manera, será posible firmar varios documentos PDF exigiendo el PIN para cada uno de ellos.
-     */    
-    public void testDoBatchSign() throws Exception{
-    	File resourcesDirectoryIn = new File(PDF_FILES_IN);
-    	String inDirectory = resourcesDirectoryIn.getAbsolutePath();
-    	File resourcesDirectoryOut = new File(PDF_FILES_OUT);
-    	String OutDirectory = resourcesDirectoryOut.getAbsolutePath();
-
-    	String ret = autofirmaDefApi.firmaBatch(inDirectory, OutDirectory,XMLLOOKSIMENDEF,
-				"USUARIO PRUEBA PKI19 |X00000049/cn=defensa-ec-wpg2016,2.5.4.97=#0c0f56415445532d533238303032333149,ou=pki,o=ministerio de defensa,c=es/59449110274331648111628035804245974603",
-				"A111111a",
-				false);  
-        System.out.println(ret);
-    	
-    }
 
     @Test
-    //OK
-    /*
-     * b.	Será posible firmar varios documentos PDF introduciendo sólo una vez el PIN de la tarjeta (Firma Masiva en Lotes de Autorización Única). 
-     * Deberá implementarse un mecanismo por el cual se puedan agrupar las peticiones de firma en un lote, de forma que se procese el lote en el cliente sin necesidad 
-     * de conexiones de red adicionales, invocaciones adicionales y conservando la sesión contra el almacén de claves y certificados. 
-     * El firmante solo tendrá que autorizar una vez el acceso a su clave privada. La seguridad del acceso al almacén de claves debe ser completa, 
-     * y deberá advertirse al usuario de que cuando autoriza al uso lo hace para múltiples ficheros. 
-		i.	Todas las operaciones de firma deben permitir firmar sólo o firmar con sello de tiempo.
-		ii.	Todas las operaciones de firma deben permitir volver a firmar un documento previamente firmado.
-		c.	De igual manera, será posible firmar varios documentos PDF exigiendo el PIN para cada uno de ellos.
-     */    
-    public void testDoBatchSignWhithoutPass() throws Exception{
-    	File resourcesDirectoryIn = new File(PDF_FILES_IN);
-    	String inDirectory = resourcesDirectoryIn.getAbsolutePath();
-    	File resourcesDirectoryOut = new File(PDF_FILES_OUT);
-    	String OutDirectory = resourcesDirectoryOut.getAbsolutePath();
-
-    	String ret = autofirmaDefApi.firmaBatch(inDirectory, OutDirectory,XMLLOOKSIMENDEF,
-				"USUARIO PRUEBA PKI19 |X00000049/cn=defensa-ec-wpg2016,2.5.4.97=#0c0f56415445532d533238303032333149,ou=pki,o=ministerio de defensa,c=es/59449110274331648111628035804245974603",
-				"A111111a",
-				true); 
-        System.out.println(ret);
-    	
-    }
-
-    ////@Test
     //OK
     /*
      * d.	De deben poder verificar documentos PDF: Verifica las firmas de un documento PDF, informando sobre el número de firmas y un resultado de la verificación para cada una de ellas.

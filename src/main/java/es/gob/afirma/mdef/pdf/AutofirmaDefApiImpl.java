@@ -55,10 +55,8 @@ import es.gob.afirma.signers.pades.PdfHasUnregisteredSignaturesException;
 import es.gob.afirma.signers.pades.PdfIsCertifiedException;
 import es.gob.afirma.signers.pades.PdfUtil;
 import es.gob.afirma.signers.pades.PdfUtil.SignatureField;
-import es.gob.afirma.standalone.SimpleKeyStoreManager;
 import es.gob.afirma.standalone.ui.preferences.ExtraParamsHelper;
 import es.gob.afirma.standalone.ui.preferences.PreferencesManager;
-import nu.xom.XMLException;
 
 
 @Service
@@ -99,7 +97,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			List<String> localList = localAcroFields.getSignatureNames();
 			
 			List<String> listNamesEmpty = fields.stream().map(u -> u.getName()).collect(Collectors.toList());
-			if(localList.size()>0){
+			if(!localList.isEmpty()){
 				listNamesEmpty.addAll(localList);
 			}
 			int cont =1;
@@ -150,74 +148,10 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 
 	}
 
-//	@Override
-//	public String firmaBatch(String xmlPath, String alias, String password) throws Exception{
-//		// Conversion del fichero XML a bytes
-//		byte [] xmlBytes = null;
-//		File f = new File(xmlPath);
-//		xmlBytes = new byte[(int)f.length()]; 
-//		try (
-//				final FileInputStream fis = new FileInputStream(f); 
-//				){
-//			
-//			fis.read(xmlBytes);  
-//			if (xmlBytes.length < 1) {
-//				throw new IllegalArgumentException(
-//					"El XML de definicion de lote de firmas no puede ser nulo ni vacio" 
-//				);
-//			}
-//			
-//			AggregatedKeyStoreManager aksm;
-//		
-//			//Se obtiene el almacen de Windows (posibilidad de inicializar otro almacen)
-//			 aksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
-//					 //AOKeyStore.WINDOWS,
-//					 AOKeyStore.TEMD,
-//					 null, 
-//					 null, 
-//					 null, 
-//					 null
-//					);
-//			 
-//			 if(AOUIFactory.showConfirmDialog(
-//     				null,
-//     				SimpleAfirmaMessages.getString("Api.1"), 
-//     				SimpleAfirmaMessages.getString("Api.0"), 
-//     				JOptionPane.YES_NO_OPTION,
-//     				JOptionPane.WARNING_MESSAGE
-//     			) == 0) {
-//				 //Se obtiene la clave privada del almacen
-//				 PrivateKeyEntry pke = aksm.getKeyEntry(alias);
-//			 
-//				 //Se firma con la clave privada
-//				 return BatchSigner.sign(
-//						Base64.encode(xmlBytes), 
-//						pke.getCertificateChain(), 
-//						pke.getPrivateKey()
-//					);
-//			 }
-//		} catch (CertificateEncodingException | AOException e) {
-//			LOGGER.severe("Error durante la firma por lotes: " + e); 
-//			throw e;
-//		}
-//		catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-//			LOGGER.severe("No se ha encontrado el alias en el almacen: " + e); 
-//			throw e;
-//		}
-//		catch (AOKeystoreAlternativeException e) {
-//			LOGGER.severe("No de ha podido inicializar el almacen de windows: " + e); 
-//			throw e;
-//		}
-//		//throw new AOCancelledOperationException("Acceso a la clave privada no permitido"); 
-//	
-//		return null;	
-//	}
-
-	
 	@Override
-	public String firmaBatch(String originalPath, String destinyPath, 
-			String xmlLook,String alias, String password, boolean solicitud) throws XMLException, AOCertificatesNotFoundException,
-			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
+	public String firmaBatch(String originalPath, String destinyPath, String xmlLook, String alias, String password,
+			boolean solicitud) throws BadPdfPasswordException, PdfIsCertifiedException,
+			PdfHasUnregisteredSignaturesException, PdfException, AOCertificatesNotFoundException {
 		File folder = new File(originalPath);
 		File folderDestiny = new File(destinyPath);
 		File[] listOfFiles = folder.listFiles();
@@ -225,29 +159,29 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 
 		    for (int i = 0; i < listOfFiles.length; i++) {
 		      if (listOfFiles[i].isFile()) {
-		    	  String texto = listOfFiles[i].getName();
+		    	String texto = listOfFiles[i].getName();
 		        String origen = folder.getAbsolutePath().concat("\\").concat(listOfFiles[i].getName());
+		        int pos = texto.lastIndexOf('.');
 		        String salida = folderDestiny.getAbsolutePath().concat("\\").concat(
-		        		(texto.substring(0,texto.lastIndexOf(".")+1).concat("signed.").concat(texto.substring(texto.lastIndexOf(".")+1))));
+		        		(texto.substring(0,pos+1).concat("signed.").concat(texto.substring(pos+1))));
 		        
 		        firmaConSinSolicitud(origen,salida,null, null, xmlLook, solicitud, alias, password);
 		        numeroDocumentos = i;
-		      } else if (listOfFiles[i].isDirectory()) {
-		      }
+		      } 
 		    }	
 		return "el numero de documentos firmados es : "+ ((numeroDocumentos > 1)?numeroDocumentos+1:0);	
 	}
 	
 	@Override
 	public void firmaFinal(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
-			String xmlLook) throws XMLException, AOCertificatesNotFoundException,
+			String xmlLook) throws AOCertificatesNotFoundException,
 			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
 
 		firmaConSinSolicitud(originalPath,destinyPath,policyIdentifier, fieldName, xmlLook, false, null, null);
 	}
 
 	private void firmaConSinSolicitud(String originalPath, String destinyPath, String policyIdentifier, String fieldName,
-			String xmlLook, boolean solicitud, String alias, String password) throws XMLException, AOCertificatesNotFoundException,
+			String xmlLook, boolean solicitud, String alias, String password) throws AOCertificatesNotFoundException,
 			BadPdfPasswordException, PdfIsCertifiedException, PdfHasUnregisteredSignaturesException, PdfException {
 		final AOSigner signer = AOSignerFactory.getSigner(AOSignConstants.SIGN_FORMAT_PADES);
 
@@ -314,7 +248,6 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			new XMLLookUnmarsall(xmlLook, field, p, pke).parse();
 		} catch (es.gob.afirma.mdef.pdf.XMLException e1) {
         	LOGGER.severe("No se han recuperado los valores del xml: " + e1); 
-			e1.printStackTrace();
 		}
         p.putAll(prefProps);
         final byte[] signResult;
@@ -364,7 +297,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 			PdfReader localPdfReader = new PdfReader(sign);
 			AcroFields localAcroFields = localPdfReader.getAcroFields();			
 			List localList = localAcroFields.getSignatureNames();
-			if(!(localList.size()>0)){
+			if(localList.isEmpty()){
 				return false;
 			}
 			return SignValiderFactory.getSignValider(sign).validate(sign).getValidity().equals(SIGN_DETAIL_TYPE.OK);
@@ -378,8 +311,16 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 	@Override
 	public PrivateKeyEntry recuperaClavePrivada(List<? extends CertificateFilter> filters)
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
-			KeyStoreException, NoSuchAlgorithmException {
-		final AOKeyStoreManager ksm = SimpleKeyStoreManager.getKeyStore(false, null);
+			KeyStoreException, NoSuchAlgorithmException, AOKeystoreAlternativeException, IOException {
+		final AOKeyStore ks = AOKeyStore.TEMD;
+		AOKeyStoreManager ksm;
+			ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
+					ks,
+					null,
+					null,
+					ks.getStorePasswordCallback(null),
+					//pc,
+					null);
 		final AOKeyStoreDialog dialog = new AOKeyStoreDialog(
 				ksm,
 				null,
@@ -404,7 +345,7 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
         pc.setPassword(password.toCharArray());
 		final AOKeyStore ks = AOKeyStore.TEMD;
 		ks.getStorePasswordCallback(pc);
-		AOKeyStoreManager senderKeyStoreManager =  AOKeyStoreManagerFactory.getAOKeyStoreManager(
+		AOKeyStoreManager ksm =  AOKeyStoreManagerFactory.getAOKeyStoreManager(
 				ks,
 				null,
 				null,
@@ -413,10 +354,10 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 				null);
 
 		if(!solicitud){
-			senderKeyStoreManager.getType().getCertificatePasswordCallback(null).getPassword();
+			ksm.getType().getCertificatePasswordCallback(null).getPassword();
 
 		}
-		return senderKeyStoreManager.getKeyEntry(alias);
+		return ksm.getKeyEntry(alias);
 		
 	}
 	
@@ -424,7 +365,6 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 	public void anadirCampoFirma(String filePath, int page, int leftX, int leftY, int rightX, int rightY)
 			throws DocumentException, IOException {
 		try (
-				//FileOutputStream fos = new FileOutputStream(filePath)
 				FileOutputStream fos = new FileOutputStream(createNameNewFile(filePath, "New"))
 				) {
 		int pageNbr = numeroPaginasPDF(filePath);
@@ -457,21 +397,29 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
             newPdf.renameTo(new File(filePath));			
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.severe("PDF no existe: " + e);
 			throw new IOException("El fichero " + filePath + " no existe: " + e);  //$NON-NLS-2$
 		} catch (PdfException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.severe("Error en las operaciones con el PDF: " + e);
 		}
 	}
 	
 	@Override
 	public String cnTarjeta(List<? extends CertificateFilter> filters) 
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
-			KeyStoreException, NoSuchAlgorithmException{
+			KeyStoreException, NoSuchAlgorithmException, AOKeystoreAlternativeException, IOException{
 		String cnTarjeta = null;
-		final AOKeyStoreManager ksm = SimpleKeyStoreManager.getKeyStore(false, null);
-		final AOKeyStoreDialog dialog = new AOKeyStoreDialog(
+	
+		final AOKeyStore ks = AOKeyStore.TEMD;
+		AOKeyStoreManager ksm;
+			ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
+					ks,
+					null,
+					null,
+					ks.getStorePasswordCallback(null),
+					null);		
+//
+			final AOKeyStoreDialog dialog = new AOKeyStoreDialog(
 				ksm,
 				null,
 				false,             // Comprobar claves privadas
@@ -498,7 +446,8 @@ public class AutofirmaDefApiImpl implements AutofirmaDefApi {
 	
 
 	private String createNameNewFile(String filePath, String modif){
-		return filePath.substring(0 ,  filePath.indexOf("."))+modif+filePath.substring(filePath.indexOf("."),filePath.length());
+		int position = filePath.indexOf('.');
+		return filePath.substring(0 ,  position)+modif+filePath.substring(position,filePath.length());
 	}
 	
 }

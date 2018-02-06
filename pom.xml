@@ -19,11 +19,11 @@
 
 	<dependencies>
 
-
+	
 		<dependency>
 			<groupId>es.gob.afirma</groupId>
-			<artifactId>mdef-afirma-ui-simpleafirma</artifactId>
-			<version>1.5-DEFENSA</version>
+			<artifactId>mdef-afirma-keystores-temd</artifactId>
+			<version>${project.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>es.gob.afirma.local</groupId>

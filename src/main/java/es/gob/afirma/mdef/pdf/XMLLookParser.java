@@ -32,13 +32,16 @@ import org.w3c.dom.NodeList;
 
 import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.signers.pades.PdfUtil.SignatureField;
-import es.gob.afirma.standalone.ui.pdf.ColorResource;
-import es.gob.afirma.standalone.ui.pdf.SignPdfUiPanelPreview;
+import es.gob.afirma.mdef.decorator.pdf.ColorResource;
+import es.gob.afirma.mdef.decorator.pdf.SignPdfUiPanelPreview;
 
 /** Parser del XML.
  * @author Sergio Mart&iacute;nez Rico. */
 public final class XMLLookParser {
 
+	private static final String ERROR_PASAR_LA_IMAGEN_A_JPG = "No ha sido posible pasar la imagen a JPG: ";
+	private static final String TITLE = "title";
+	private static final String POSITION = "position";
 	static final Logger LOGGER = Logger.getLogger("es.gob.afirma"); 
 	private final String xml;
 	private BufferedImage image;
@@ -92,8 +95,6 @@ public final class XMLLookParser {
 		try(final InputStream in = new ByteArrayInputStream(this.xml.getBytes(StandardCharsets.UTF_8))) {
 			final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			//final Document doc = docBuilder.parse(in);
-			 // create a new document from input stream
 			final FileInputStream fis = new FileInputStream(this.xml);
 			final Document doc = docBuilder.parse(fis);
 			
@@ -175,7 +176,7 @@ public final class XMLLookParser {
 		}
 	}
 
-	private void setBackgroundImage(final Node background) throws DOMException, IOException, XMLException {
+	private void setBackgroundImage(final Node background) throws IOException, XMLException {
 		final NodeList backgroundList = background.getChildNodes();
 		for (int i = 0; i < backgroundList.getLength(); i++) {
 			final Node backImage = backgroundList.item(i);
@@ -213,7 +214,7 @@ public final class XMLLookParser {
 			        			height = Integer.parseInt(imageSize.getNamedItem("height").getTextContent()); 
 			        		}
 			        	}
-			        	if (element.getNodeName().equals("position")) { 
+			        	if (element.getNodeName().equals(POSITION)) { 
 			        		final NamedNodeMap imageSize = element.getAttributes();
 			        		if (imageSize != null && imageSize.getLength() == 2) {
 			        			posX = Integer.parseInt(imageSize.getNamedItem("x").getTextContent()); 
@@ -223,7 +224,7 @@ public final class XMLLookParser {
 					}
 				}
 				if (im != null) {
-					System.out.println(" width : "+width+" height : "+ height +" posX "+ posX+" posY "+ posY);
+					LOGGER.info(" width : "+width+" height : "+ height +" posX "+ posX+" posY "+ posY);
 					paintImage(im, width, height, posX, posY);
 					saveImageProperties();
 				}
@@ -231,7 +232,7 @@ public final class XMLLookParser {
 		}
 	}
 
-	private void setForeground(final Node foreground) throws DOMException, IOException, XMLException {
+	private void setForeground(final Node foreground) throws IOException, XMLException {
 		final NodeList foregroundList = foreground.getChildNodes();
 		for (int i = 0; i < foregroundList.getLength(); i++) {
 			final Node foreItem = foregroundList.item(i);
@@ -269,7 +270,7 @@ public final class XMLLookParser {
 			        			height = Integer.parseInt(imageSize.getNamedItem("height").getTextContent()); 
 			        		}
 			        	}
-			        	if (element.getNodeName().equals("position")) { 
+			        	if (element.getNodeName().equals(POSITION)) { 
 			        		final NamedNodeMap imageSize = element.getAttributes();
 			        		if (imageSize != null && imageSize.getLength() == 2) {
 			        			posX = Integer.parseInt(imageSize.getNamedItem("x").getTextContent()); 
@@ -309,7 +310,7 @@ public final class XMLLookParser {
 	        			fontSize = Integer.parseInt(textPropAttrib.getNamedItem("fontSize").getTextContent()); 
 	        		}
 	        	}
-	        	else if (element.getNodeName().equals("position")) { 
+	        	else if (element.getNodeName().equals(POSITION)) { 
 	        		final NamedNodeMap textPropAttrib = element.getAttributes();
 	        		if (textPropAttrib != null && textPropAttrib.getLength() == 2) {
 		        		x = Integer.parseInt(textPropAttrib.getNamedItem("x").getTextContent()); 
@@ -349,7 +350,7 @@ public final class XMLLookParser {
 				        			fontSize = Integer.parseInt(textPropAttrib.getNamedItem("fontSize").getTextContent()); 
 				        		}
 				        	}
-				        	else if (element.getNodeName().equals("position")) { 
+				        	else if (element.getNodeName().equals(POSITION)) { 
 				        		final NamedNodeMap textPropAttrib = element.getAttributes();
 				        		if (textPropAttrib != null && textPropAttrib.getLength() == 2) {
 					        		x = Integer.parseInt(textPropAttrib.getNamedItem("x").getTextContent()); 
@@ -378,37 +379,37 @@ public final class XMLLookParser {
 	        		final NamedNodeMap textAttrib = element.getAttributes();
 	        		if (textAttrib != null && textAttrib.getLength() == 2) {
 	        			if (textAttrib.getNamedItem("id").getTextContent().equals("Subject")) {  //$NON-NLS-2$
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ this.cer.getSubjectDN().getName() 
 	        						+ "\n"; 
 	        			}
 	        			else if (textAttrib.getNamedItem("id").getTextContent().equals("Issuer")) {  //$NON-NLS-2$
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ this.cer.getIssuerDN().getName() 
 	        						+ "\n"; 
 						}
 	        			else if (textAttrib.getNamedItem("id").getTextContent().equals("SerialNumber")) {  //$NON-NLS-2$
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ this.cer.getSerialNumber() 
 	        						+ "\n"; 
 						}
 	        			else if (textAttrib.getNamedItem("id").getTextContent().equals("Reason")  //$NON-NLS-2$
 	        					&& this.reason != null) {
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ this.reason + "\n"; 
 						}
 	        			else if (textAttrib.getNamedItem("id").getTextContent().equals("Location")  //$NON-NLS-2$
 	        					&& this.location != null) {
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ this.location + "\n"; 
 						}
 	        			else if (textAttrib.getNamedItem("id").getTextContent().equals("ContactInfo")  //$NON-NLS-2$
 	        					&& this.contactInfo != null) {
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ this.contactInfo + "\n"; 
 						}
 	        			else if (textAttrib.getNamedItem("id").getTextContent().equals("Date")) {  //$NON-NLS-2$
-	        				text += textAttrib.getNamedItem("title").getTextContent() 
+	        				text += textAttrib.getNamedItem(TITLE).getTextContent() 
 	        						+ new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "\n";  //$NON-NLS-2$
 						}
 		        	}
@@ -542,8 +543,8 @@ public final class XMLLookParser {
 			return Base64.encode(osImage.toByteArray());
 		}
         catch (final Exception e) {
-        	LOGGER.severe("No ha sido posible pasar la imagen a JPG: " + e); 
-        	throw new IOException("No ha sido posible pasar la imagen a JPG: " + e, e); 
+        	LOGGER.severe(ERROR_PASAR_LA_IMAGEN_A_JPG + e); 
+        	throw new IOException(ERROR_PASAR_LA_IMAGEN_A_JPG + e, e); 
 		}
 	}
 
@@ -552,8 +553,8 @@ public final class XMLLookParser {
 			return ImageIO.read(inImage);
 		}
         catch (final Exception e) {
-        	LOGGER.severe("No ha sido posible pasar la imagen a JPG: " + e); 
-        	throw new IOException("No ha sido posible pasar la imagen a JPG: " + e, e); 
+        	LOGGER.severe(ERROR_PASAR_LA_IMAGEN_A_JPG + e); 
+        	throw new IOException(ERROR_PASAR_LA_IMAGEN_A_JPG + e, e); 
 		}
 	}
 }

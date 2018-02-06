@@ -11,12 +11,12 @@ import com.aowagie.text.DocumentException;
 
 import es.gob.afirma.keystores.AOCertificatesNotFoundException;
 import es.gob.afirma.keystores.AOKeyStoreManagerException;
+import es.gob.afirma.keystores.AOKeystoreAlternativeException;
 import es.gob.afirma.keystores.filters.CertificateFilter;
 import es.gob.afirma.signers.pades.BadPdfPasswordException;
 import es.gob.afirma.signers.pades.PdfHasUnregisteredSignaturesException;
 import es.gob.afirma.signers.pades.PdfIsCertifiedException;
 import nu.xom.XMLException;
-//import es.gob.afirma.mdef.pdf.PdfException;
 
 public interface AutofirmaDefApi {
 
@@ -84,8 +84,8 @@ public interface AutofirmaDefApi {
 	 */
 	public String firmaBatch(final String originalPath, final String destinyPath, final String xmlLook,
 			final String alias, final String password, final boolean solicitud) throws PdfException,
-	XMLException, AOCertificatesNotFoundException, BadPdfPasswordException, PdfIsCertifiedException,
-			PdfHasUnregisteredSignaturesException;
+			BadPdfPasswordException, PdfIsCertifiedException,
+			PdfHasUnregisteredSignaturesException, AOCertificatesNotFoundException;
 
 	/**
 	 * Firma del fichero pdf.
@@ -115,7 +115,7 @@ public interface AutofirmaDefApi {
 	 */
 	public void firmaFinal(final String originalPath, final String destinyPath, final String policyIdentifier,
 			final String fieldName, final String xmlLook) throws PdfException,
-	XMLException, AOCertificatesNotFoundException, BadPdfPasswordException, PdfIsCertifiedException,
+	        AOCertificatesNotFoundException, BadPdfPasswordException, PdfIsCertifiedException,
 			PdfHasUnregisteredSignaturesException;
 
 	/**
@@ -145,10 +145,14 @@ public interface AutofirmaDefApi {
 	 *             Error en la inicializaci&oacute;n del almac&eacute;n.
 	 * @throws NoSuchAlgorithmException
 	 *             No existe el algoritmo.
+	 * @throws IOException 
+	 *             Error en el proceso.
+	 * @throws AOKeystoreAlternativeException 
+	 *             No se ha podido inicializar el almac&eacute;n alternativo.
 	 */
 	public PrivateKeyEntry recuperaClavePrivada(final List<? extends CertificateFilter> filters)
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
-			KeyStoreException, NoSuchAlgorithmException;
+			KeyStoreException, NoSuchAlgorithmException, AOKeystoreAlternativeException, IOException;
 
 	/**
 	 * Se crea un campo vac&iacute;o de firma para una p&aacute;gina y
@@ -175,8 +179,7 @@ public interface AutofirmaDefApi {
 	 *             Error al encontrar el fichero.
 	 */
 	public void anadirCampoFirma(final String filePath, final int page, final int leftX, final int leftY, final int rightX,
-			final int rightY) throws DocumentException, IOException;// ,
-																	// PdfException;
+			final int rightY) throws DocumentException, IOException;
 	
 	
 	/**
@@ -197,9 +200,13 @@ public interface AutofirmaDefApi {
 	 *             No existe el algoritmo.
 	 * @throws PdfException
 	 *             Error al gestionar el documento pdf.
+	 * @throws IOException 
+	 *             Error en el proceso.
+	 * @throws AOKeystoreAlternativeException 
+	 *             No se ha podido inicializar el almac&eacute;n alternativo.
 	 */
 	public String cnTarjeta (final List<? extends CertificateFilter> filters) 
 			throws UnrecoverableEntryException, AOCertificatesNotFoundException, AOKeyStoreManagerException,
-			KeyStoreException, NoSuchAlgorithmException, PdfException;
+			KeyStoreException, NoSuchAlgorithmException, PdfException, AOKeystoreAlternativeException, IOException;
 
 }
