@@ -138,8 +138,7 @@ public class AutofirmaDefApiTest {
 		assertEquals("USUARIO PRUEBA PKI17 |X00000047", autofirmaDefApi.cnTarjeta(getCertFilters()));
 	}
 
-    //@Test
-    //no está
+    @Test
     /*
      * vii.	Firmar documento PDF: Firma de un documento PDF, con claves externas, con las siguientes características:
 		1.	Podrá ser visible o invisible.
