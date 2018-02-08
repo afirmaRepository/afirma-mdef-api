@@ -41,7 +41,7 @@ public class AutofirmaDefApiBatchPassTest {
     	String ret = autofirmaDefApi.firmaBatch(inDirectory, OutDirectory,XMLLOOKSIMENDEF,
     			"USUARIO PRUEBA PKI17 |X00000047/cn=defensa-ec-wpg2016,2.5.4.97=#0c0f56415445532d533238303032333149,ou=pki,o=ministerio de defensa,c=es/97475372309037932331773164525720753402",
 				//"USUARIO PRUEBA PKI19 |X00000049/cn=defensa-ec-wpg2016,2.5.4.97=#0c0f56415445532d533238303032333149,ou=pki,o=ministerio de defensa,c=es/59449110274331648111628035804245974603",
-				"A111111a",
+				"A111111a", 
 				false);  
         System.out.println(ret);
     	
